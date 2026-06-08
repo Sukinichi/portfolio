@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F5F2ED;
+    --surface: #FFFDF8;
+    --ink: #1C1A16;
+    --ink-muted: #6B6760;
+    --ink-faint: #A09D99;
+    --accent: #C4613A;
+    --accent-light: #F2E0D8;
+    --border: rgba(28,26,22,0.1);
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 3rem;
+    background: rgba(245,242,237,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: 0.01em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: var(--ink-muted);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--ink); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 5rem;
+  }
+
+  .hero-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 3rem 6rem 3rem;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-headline {
+    font-family: var(--serif);
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-headline em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--ink-muted);
+    max-width: 400px;
+    line-height: 1.75;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: #fff;
+    padding: 0.75rem 1.75rem;
+    border-radius: 2rem;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-primary:hover { background: var(--accent); transform: translateY(-1px); }
+
+  .btn-ghost {
+    color: var(--ink-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 300;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .btn-ghost:hover { color: var(--ink); border-color: var(--ink); }
+
+  .hero-visual {
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-placeholder {
+    width: 280px;
+    height: 360px;
+    border-radius: 200px 200px 140px 140px;
+    background: var(--accent-light);
+    border: 1px solid rgba(196,97,58,0.2);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 2rem;
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    text-transform: uppercase;
+    position: relative;
+  }
+
+  .hero-placeholder::before {
+    content: '';
+    position: absolute;
+    top: 3rem;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(196,97,58,0.15);
+    border: 1px dashed rgba(196,97,58,0.3);
+  }
+
+  /* ABOUT */
+  .about {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 8rem 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 1.5rem;
+  }
+
+  .about-heading {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+  }
+
+  .about-heading em { font-style: italic; color: var(--accent); }
+
+  .about-body {
+    font-size: 0.9375rem;
+    font-weight: 300;
+    color: var(--ink-muted);
+    line-height: 1.8;
+    margin-bottom: 1.25rem;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+  }
+
+  .skill-chip {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 0.65rem 1rem;
+    font-size: 0.8125rem;
+    color: var(--ink-muted);
+    font-weight: 400;
+  }
+
+  .skill-chip strong {
+    display: block;
+    font-weight: 500;
+    color: var(--ink);
+    font-size: 0.875rem;
+    margin-bottom: 0.15rem;
+  }
+
+  /* CONTACT */
+  .contact {
+    padding: 8rem 3rem;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .contact-intro-heading {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  .contact-intro-heading em { font-style: italic; color: var(--accent); }
+
+  .contact-intro-body {
+    font-size: 0.9375rem;
+    font-weight: 300;
+    color: var(--ink-muted);
+    line-height: 1.8;
+    margin-bottom: 2rem;
+  }
+
+  .contact-detail {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--ink-muted);
+  }
+
+  .contact-detail a {
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 400;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .contact-detail a:hover { color: var(--accent); border-color: var(--accent); }
+
+  .contact-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* FORM */
+  .contact-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 2rem 2.25rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink-muted);
+    letter-spacing: 0.03em;
+  }
+
+  input, textarea, select {
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 0.65rem 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: vertical;
+    -webkit-appearance: none;
+  }
+
+  input::placeholder, textarea::placeholder { color: var(--ink-faint); }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+
+  textarea { min-height: 120px; }
+
+  .form-submit {
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 2rem;
+    padding: 0.8rem 2rem;
+    font-family: var(--sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .form-submit:hover { background: var(--accent); transform: translateY(-1px); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8125rem;
+    color: var(--ink-faint);
+  }
+
+  footer a {
+    color: var(--ink-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  footer a:hover { color: var(--ink); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.5rem; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-text { padding: 5rem 1.5rem 3rem; }
+    .hero-visual { min-height: 300px; border-left: none; border-top: 1px solid var(--border); }
+    .about, .contact { grid-template-columns: 1fr; gap: 3rem; padding: 4rem 1.5rem; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="#">Your Name</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <span class="hero-tag">Available for projects</span>
+    <h1 class="hero-headline">
+      Crafting things<br />
+      that feel <em>just right</em>
+    </h1>
+    <p class="hero-sub">
+      A short line or two about who you are and what you do.
+      Keep it honest, keep it warm.
+    </p>
+    <div class="hero-cta">
+      <a href="#work" class="btn-primary">See my work</a>
+      <a href="#contact" class="btn-ghost">Get in touch</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-placeholder">Your photo here</div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div>
+    <p class="section-label">About</p>
+    <h2 class="about-heading">A bit about <em>me</em></h2>
+    <p class="about-body">
+      A paragraph about your background, what you care about, and how you got here.
+      This is a good place to be specific — a project that mattered, a place that shaped you.
+    </p>
+    <p class="about-body">
+      Another short paragraph. What are you working on now? What drives your practice?
+    </p>
+  </div>
+  <div>
+    <p class="section-label">Skills & tools</p>
+    <div class="skills-grid">
+      <div class="skill-chip"><strong>Skill one</strong>Short description</div>
+      <div class="skill-chip"><strong>Skill two</strong>Short description</div>
+      <div class="skill-chip"><strong>Skill three</strong>Short description</div>
+      <div class="skill-chip"><strong>Skill four</strong>Short description</div>
+      <div class="skill-chip"><strong>Skill five</strong>Short description</div>
+      <div class="skill-chip"><strong>Skill six</strong>Short description</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div>
+    <p class="section-label">Contact</p>
+    <h2 class="contact-intro-heading">Let's make <em>something</em></h2>
+    <p class="contact-intro-body">
+      Whether you have a project in mind or just want to say hello — I'd love to hear from you.
+    </p>
+    <div class="contact-detail">
+      <span class="contact-dot"></span>
+      <span>Email: <a href="mailto:you@example.com">you@example.com</a></span>
+    </div>
+    <div class="contact-detail">
+      <span class="contact-dot"></span>
+      <span>Based in <strong>Your City</strong></span>
+    </div>
+    <div class="contact-detail">
+      <span class="contact-dot"></span>
+      <span><a href="#">LinkedIn</a> &nbsp;·&nbsp; <a href="#">GitHub</a></span>
+    </div>
+  </div>
+
+  <div class="contact-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Your name" />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="you@example.com" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="subject">Subject</label>
+      <input type="text" id="subject" placeholder="What's this about?" />
+    </div>
+    <div class="form-group">
+      <label for="message">Message</label>
+      <textarea id="message" placeholder="Tell me a bit about what you have in mind…"></textarea>
+    </div>
+    <button class="form-submit" type="button">Send message</button>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Your Name</span>
+  <span>Built with care</span>
+</footer>
+
+</body>
+</html>
