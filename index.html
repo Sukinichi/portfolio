@@ -406,6 +406,127 @@
     display: none;
   }
 
+  /* LIGHTBOX — full-view popup for project-page media without an external link */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox.open { display: flex; }
+
+  .lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(28,26,22,0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .lightbox-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 2rem;
+    max-width: 92vw;
+    max-height: 88vh;
+    background: var(--surface);
+    border-radius: 1rem;
+    padding: 1.75rem;
+    box-shadow: 0 24px 70px rgba(28,26,22,0.35);
+  }
+
+  .lightbox-media {
+    border-radius: 0.75rem;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 0;
+    min-height: 0;
+    flex-shrink: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--bg);
+  }
+
+  .lightbox-media .media-label {
+    font-size: 1.05rem;
+  }
+
+  .lightbox-caption {
+    flex-shrink: 0;
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .lightbox-caption .lightbox-title {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    color: var(--ink);
+    margin-bottom: 0.6rem;
+  }
+
+  .lightbox-caption .lightbox-desc {
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: var(--ink-muted);
+    line-height: 1.7;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .lightbox-close:hover { background: var(--accent); color: #fff; }
+
+  .lightbox-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,253,247,0.9);
+    color: var(--ink);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .lightbox-arrow:hover { background: var(--accent); color: #fff; }
+  .lightbox-arrow.prev { left: 1.5rem; }
+  .lightbox-arrow.next { right: 1.5rem; }
+
   /* RESPONSIVE */
   @media (max-width: 1100px) {
     .gallery { column-count: 2; }
@@ -426,6 +547,19 @@
     .page-content, .page-content.reverse { grid-template-columns: 1fr; }
     .page-content.reverse .page-text,
     .page-content.reverse .page-media { order: initial; }
+
+    .lightbox-content {
+      flex-direction: column;
+      max-width: 94vw;
+      max-height: 92vh;
+      padding: 1.25rem;
+      overflow-y: auto;
+    }
+    .lightbox-caption { width: auto; }
+    .lightbox-arrow { width: 40px; height: 40px; font-size: 1.25rem; }
+    .lightbox-arrow.prev { left: 0.5rem; }
+    .lightbox-arrow.next { right: 0.5rem; }
+    .lightbox-close { top: 0.75rem; right: 0.75rem; }
   }
 
   @media (hover: none) {
@@ -484,6 +618,15 @@
                 (e.g. "View on itch.io ↗"). Items without data-link
                 on the landing page instead navigate to their project
                 gallery when clicked.
+
+  - "LIGHTBOX:" on project pages (#gallery), any item WITHOUT data-link
+                opens a full-view popup when clicked — background blurs,
+                the media scales to fit the screen, and the title/description
+                sit beside it. Move between pieces with the on-screen
+                arrows, the ← → keys, or the scroll wheel. Click outside
+                the image, press Esc, or use the × button to close.
+                Items WITH data-link skip this and open their external
+                link instead.
   ============================================================
 -->
 
@@ -856,6 +999,21 @@
   </div>
 </div>
 
+<!-- LIGHTBOX — full-view popup, see "LIGHTBOX:" note in the editing guide above -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-backdrop"></div>
+  <div class="lightbox-content">
+    <div class="lightbox-media" id="lightboxMedia"></div>
+    <div class="lightbox-caption">
+      <p class="lightbox-title" id="lightboxTitle"></p>
+      <p class="lightbox-desc" id="lightboxDesc"></p>
+    </div>
+  </div>
+  <button class="lightbox-arrow prev lightbox-control" id="lightboxPrev" aria-label="Previous">‹</button>
+  <button class="lightbox-arrow next lightbox-control" id="lightboxNext" aria-label="Next">›</button>
+  <button class="lightbox-close lightbox-control" id="lightboxClose" aria-label="Close">×</button>
+</div>
+
 <script>
   const navButtons   = document.querySelectorAll('.nav-btn[data-view]');
   const galleryItems = document.querySelectorAll('.gallery-item');
@@ -1014,6 +1172,102 @@
     sidebar.classList.remove('open');
     sidebarBackdrop.classList.remove('open');
   });
+
+  /* ---- Lightbox ---- */
+  const lightbox      = document.getElementById('lightbox');
+  const lightboxMedia = document.getElementById('lightboxMedia');
+  const lightboxTitle = document.getElementById('lightboxTitle');
+  const lightboxDesc  = document.getElementById('lightboxDesc');
+  const lightboxClose = document.getElementById('lightboxClose');
+  const lightboxPrev  = document.getElementById('lightboxPrev');
+  const lightboxNext  = document.getElementById('lightboxNext');
+
+  let lightboxItems = [];
+  let lightboxIndex = -1;
+
+  // Only items currently visible in the project gallery, without an external link
+  function getLightboxItems() {
+    return [...gallery.querySelectorAll('.gallery-item')]
+      .filter(item => item.style.display !== 'none' && !item.dataset.link);
+  }
+
+  function renderLightboxItem() {
+    const item = lightboxItems[lightboxIndex];
+    const media = item.querySelector('.media');
+    const computed = getComputedStyle(media);
+
+    lightboxMedia.style.aspectRatio = media.style.aspectRatio || 'auto';
+    lightboxMedia.style.backgroundImage = computed.backgroundImage;
+    lightboxMedia.style.backgroundColor = computed.backgroundColor;
+    lightboxMedia.innerHTML = media.innerHTML;
+
+    lightboxTitle.textContent = item.dataset.title || '';
+    lightboxDesc.textContent  = item.dataset.desc || '';
+  }
+
+  function openLightbox(item) {
+    lightboxItems = getLightboxItems();
+    lightboxIndex = lightboxItems.indexOf(item);
+    if (lightboxIndex === -1) return;
+
+    tooltip.classList.remove('visible');
+    renderLightboxItem();
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function showNext() {
+    if (lightboxItems.length < 2) return;
+    lightboxIndex = (lightboxIndex + 1) % lightboxItems.length;
+    renderLightboxItem();
+  }
+
+  function showPrev() {
+    if (lightboxItems.length < 2) return;
+    lightboxIndex = (lightboxIndex - 1 + lightboxItems.length) % lightboxItems.length;
+    renderLightboxItem();
+  }
+
+  // Project-page items WITHOUT a link open the lightbox instead of doing nothing
+  gallery.querySelectorAll('.gallery-item').forEach(item => {
+    if (!item.dataset.link) {
+      item.addEventListener('click', () => openLightbox(item));
+    }
+  });
+
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightboxPrev.addEventListener('click', showPrev);
+  lightboxNext.addEventListener('click', showNext);
+
+  // Click anywhere outside the media/caption card (or its controls) closes the lightbox
+  lightbox.addEventListener('click', (e) => {
+    if (e.target.closest('.lightbox-content') || e.target.closest('.lightbox-control')) return;
+    closeLightbox();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    else if (e.key === 'ArrowRight') showNext();
+    else if (e.key === 'ArrowLeft') showPrev();
+  });
+
+  // Scroll wheel moves to the next/previous piece, with a short cooldown so
+  // one scroll gesture doesn't fly through several images at once
+  let wheelLocked = false;
+  lightbox.addEventListener('wheel', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    e.preventDefault();
+    if (wheelLocked) return;
+    wheelLocked = true;
+    if (e.deltaY > 0) showNext(); else if (e.deltaY < 0) showPrev();
+    setTimeout(() => { wheelLocked = false; }, 350);
+  }, { passive: false });
 </script>
 
 </body>
