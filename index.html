@@ -220,43 +220,7 @@
     max-width: 520px;
   }
 
-  /* COVERS GRID — shown only on "All work" */
-  .covers-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1.75rem;
-  }
-
-  .cover-item { cursor: pointer; }
-
-  .cover-item .media {
-    border-radius: 0.85rem;
-    overflow: hidden;
-    transition: transform 0.4s cubic-bezier(.2,.8,.2,1), box-shadow 0.3s ease;
-  }
-
-  .cover-item:hover .media {
-    transform: scale(1.015);
-    box-shadow: 0 14px 36px rgba(28,26,22,0.16);
-  }
-
-  .cover-title {
-    font-family: var(--serif);
-    font-size: 1.4rem;
-    color: var(--ink);
-    margin-top: 0.9rem;
-  }
-
-  .cover-sub {
-    font-size: 0.85rem;
-    font-weight: 300;
-    color: var(--ink-muted);
-    margin-top: 0.3rem;
-    line-height: 1.6;
-    max-width: 320px;
-  }
-
-  /* GALLERY — adaptive masonry via columns */
+  /* GALLERY — adaptive masonry via columns (used for landing page AND project pages) */
   .gallery {
     column-count: 3;
     column-gap: 1.25rem;
@@ -408,9 +372,11 @@
 
   .cursor-tooltip.visible { opacity: 1; }
 
+  /* Shown only for landing-page items (data-tooltip="image") */
   .cursor-tooltip .tooltip-media {
     width: 100%;
     height: 140px;
+    display: none;
   }
 
   .cursor-tooltip .tooltip-text {
@@ -431,6 +397,15 @@
     line-height: 1.55;
   }
 
+  /* Custom message shown when an item has an external link */
+  .cursor-tooltip .tooltip-link {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    margin-top: 0.6rem;
+    display: none;
+  }
+
   /* RESPONSIVE */
   @media (max-width: 1100px) {
     .gallery { column-count: 2; }
@@ -448,7 +423,6 @@
     .sidebar-backdrop.open { display: block; }
     .main { margin-left: 0; padding: 5rem 1.25rem 4rem; }
     .gallery { column-count: 1; }
-    .covers-grid { grid-template-columns: 1fr; }
     .page-content, .page-content.reverse { grid-template-columns: 1fr; }
     .page-content.reverse .page-text,
     .page-content.reverse .page-media { order: initial; }
@@ -472,6 +446,12 @@
       color: var(--ink-muted);
       line-height: 1.5;
     }
+    .caption-link {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--accent);
+      margin-top: 0.35rem;
+    }
   }
 </style>
 </head>
@@ -481,18 +461,29 @@
   ============================================================
   EDITING GUIDE — look for these comment tags throughout:
 
-  - "IMAGE:"   the line below sets a placeholder gradient.
-               Replace background: linear-gradient(...) with
-               background-image: url('your-file.jpg');
-               background-size: cover; background-position: center;
-               (or swap the whole div for an <img>)
+  - "IMAGE:"    the line below sets a placeholder gradient.
+                Replace background: linear-gradient(...) with
+                background-image: url('your-file.jpg');
+                background-size: cover; background-position: center;
+                (or swap the whole div for an <img>)
 
-  - "TEXT:"    placeholder copy you should rewrite — titles,
-               descriptions, bio paragraphs, contact info.
+  - "TEXT:"     placeholder copy you should rewrite — titles,
+                descriptions, bio paragraphs, contact info.
 
-  - "TOOLTIP:" the data-title / data-desc attributes on each
-               gallery item. These power BOTH the caption (mobile)
-               and the cursor tooltip (desktop) — edit once, updates both.
+  - "TOOLTIP:"  the data-title / data-desc attributes on each
+                gallery item. These power BOTH the caption (mobile)
+                and the cursor tooltip (desktop) — edit once, updates both.
+
+                On the LANDING PAGE (#landingGallery), the tooltip also
+                shows the image (because of data-tooltip="image").
+                On PROJECT PAGES (#gallery), the tooltip shows text only.
+
+  - "LINK:"     optional. Add data-link="https://..." to make an item
+                open an external page when clicked, and data-link-text="..."
+                to customize the message shown in the tooltip/caption
+                (e.g. "View on itch.io ↗"). Items without data-link
+                on the landing page instead navigate to their project
+                gallery when clicked.
   ============================================================
 -->
 
@@ -573,56 +564,61 @@
 
     <header class="gallery-header" id="galleryHeader">
       <h1 id="galleryTitle">All work</h1>
-      <!-- TEXT: short intro shown above the project covers -->
-      <p id="galleryDesc">A mix of character work for Twilight Bazaar, recent illustration for Girl Design, and smaller personal pieces — click through for the full gallery.</p>
+      <!-- TEXT: short intro shown above the landing gallery -->
+      <p id="galleryDesc">A mix of character work for Twilight Bazaar, recent illustration for Girl Design, and smaller personal pieces — hover for details, click to explore.</p>
     </header>
 
-    <!-- ============ COVERS (shown only on "All work") ============ -->
-    <div class="covers-grid" id="coversGrid">
+    <!-- ============ LANDING PAGE GALLERY (shown only for "All work") ============ -->
+    <!-- Each item here represents one project. Hover shows image + description in the tooltip.
+         Clicking opens that project's gallery — unless data-link is set, in which case it
+         opens the external link instead. -->
+    <div class="gallery" id="landingGallery">
 
-      <!-- COVER 1 — Twilight Bazaar -->
-      <div class="cover-item" data-view="category" data-cat="twilight-bazaar" data-label="Twilight Bazaar">
-        <!-- IMAGE: Twilight Bazaar cover -->
+      <div class="gallery-item" data-view="category" data-cat="twilight-bazaar" data-label="Twilight Bazaar" data-tooltip="image" data-title="Twilight Bazaar" data-desc="Character design and Live2D animation for a night market social sim.">
+        <!-- IMAGE + TOOLTIP IMAGE: Twilight Bazaar landing cover -->
         <div class="media" style="aspect-ratio: 4/3; background: linear-gradient(160deg, #C4613A, #F2D38A);">
           <span class="media-label">Twilight Bazaar</span>
         </div>
-        <!-- TEXT: cover title -->
-        <p class="cover-title">Twilight Bazaar</p>
-        <!-- TEXT: cover subtitle -->
-        <p class="cover-sub">Character design and Live2D animation for a night market social sim.</p>
+        <div class="caption">
+          <p class="caption-title">Twilight Bazaar</p>
+          <p class="caption-desc">Character design and Live2D animation for a night market social sim.</p>
+        </div>
       </div>
 
-      <!-- COVER 2 — Girl Design -->
-      <div class="cover-item" data-view="category" data-cat="girl-design" data-label="Girl Design">
-        <!-- IMAGE: Girl Design cover -->
-        <div class="media" style="aspect-ratio: 4/3; background: linear-gradient(160deg, #D85A30, #F0BFBF);">
+      <div class="gallery-item" data-view="category" data-cat="girl-design" data-label="Girl Design" data-tooltip="image" data-title="Girl Design" data-desc="Character illustration heading to Gamescom this year." data-link="#" data-link-text="View the Gamescom page ↗">
+        <!-- IMAGE + TOOLTIP IMAGE: Girl Design landing cover -->
+        <!-- LINK: replace data-link="#" with your real URL, and edit data-link-text above -->
+        <div class="media" style="aspect-ratio: 3/4; background: linear-gradient(160deg, #D85A30, #F0BFBF);">
           <span class="media-label">Girl Design</span>
         </div>
-        <!-- TEXT: cover title -->
-        <p class="cover-title">Girl Design</p>
-        <!-- TEXT: cover subtitle -->
-        <p class="cover-sub">Character illustration heading to Gamescom this year.</p>
+        <div class="caption">
+          <p class="caption-title">Girl Design</p>
+          <p class="caption-desc">Character illustration heading to Gamescom this year.</p>
+          <p class="caption-link">View the Gamescom page ↗</p>
+        </div>
       </div>
 
-      <!-- COVER 3 — Smaller works -->
-      <div class="cover-item" data-view="category" data-cat="smaller-works" data-label="Smaller works">
-        <!-- IMAGE: Smaller works cover -->
-        <div class="media" style="aspect-ratio: 4/3; background: linear-gradient(160deg, #8FA88A, #F2D38A);">
+      <div class="gallery-item" data-view="category" data-cat="smaller-works" data-label="Smaller works" data-tooltip="image" data-title="Smaller works" data-desc="Studies, animation tests, and personal pieces.">
+        <!-- IMAGE + TOOLTIP IMAGE: Smaller works landing cover -->
+        <div class="media" style="aspect-ratio: 16/9; background: linear-gradient(160deg, #8FA88A, #F2D38A);">
           <span class="media-label">Smaller works</span>
         </div>
-        <!-- TEXT: cover title -->
-        <p class="cover-title">Smaller works</p>
-        <!-- TEXT: cover subtitle -->
-        <p class="cover-sub">Studies, animation tests, and personal pieces.</p>
+        <div class="caption">
+          <p class="caption-title">Smaller works</p>
+          <p class="caption-desc">Studies, animation tests, and personal pieces.</p>
+        </div>
       </div>
 
     </div>
 
-    <!-- ============ GALLERY (shown for each project category) ============ -->
+    <!-- ============ PROJECT GALLERY (shown for each project category) ============ -->
+    <!-- Tooltip here is text-only (no image preview), since the artwork is already visible
+         in the grid. Add data-link / data-link-text to any item to make it open an
+         external page on click, with a custom message in the tooltip. -->
     <div class="gallery" id="gallery" style="display:none">
 
       <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="characters" data-title="Mira — Stall Keeper" data-desc="Lead NPC for the noodle stall, designed for a warm, approachable silhouette and a quick personality read.">
-        <!-- IMAGE + TOOLTIP: Mira — Stall Keeper -->
+        <!-- IMAGE + TOOLTIP TEXT: Mira — Stall Keeper -->
         <div class="media" style="aspect-ratio: 3/4; background: linear-gradient(160deg, #C4613A, #E8956B);">
           <span class="media-label">Mira — Stall Keeper</span>
         </div>
@@ -632,19 +628,21 @@
         </div>
       </div>
 
-      <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="promo" data-title="Key art — Market at dusk" data-desc="Wide promotional illustration showing the market hub at golden hour, used across the itch.io page and pitch deck.">
-        <!-- IMAGE + TOOLTIP: Key art — Market at dusk -->
+      <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="promo" data-title="Key art — Market at dusk" data-desc="Wide promotional illustration showing the market hub at golden hour." data-link="#" data-link-text="View on itch.io ↗">
+        <!-- IMAGE + TOOLTIP TEXT: Key art — Market at dusk -->
+        <!-- LINK: replace data-link="#" with your itch.io page, edit data-link-text above -->
         <div class="media" style="aspect-ratio: 16/9; background: linear-gradient(160deg, #3B3A5C, #6A6792);">
           <span class="media-label">Key art — Market at dusk</span>
         </div>
         <div class="caption">
           <p class="caption-title">Key art — Market at dusk</p>
-          <p class="caption-desc">Wide promotional illustration showing the market hub at golden hour, used across the itch.io page and pitch deck.</p>
+          <p class="caption-desc">Wide promotional illustration showing the market hub at golden hour.</p>
+          <p class="caption-link">View on itch.io ↗</p>
         </div>
       </div>
 
       <div class="gallery-item" data-category="girl-design" data-subcategory="concept" data-title="Girl Design — Early sketches" data-desc="Early silhouette and pose exploration before settling on the final design direction.">
-        <!-- IMAGE + TOOLTIP: Girl Design — Early sketches -->
+        <!-- IMAGE + TOOLTIP TEXT: Girl Design — Early sketches -->
         <div class="media" style="aspect-ratio: 4/3; background: linear-gradient(160deg, #D98C8C, #F0BFBF);">
           <span class="media-label">Girl Design — Early sketches</span>
         </div>
@@ -655,7 +653,7 @@
       </div>
 
       <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="characters" data-title="Player avatar — Base outfit" data-desc="Base customization outfit for the player character, built with modular layers for the wardrobe system.">
-        <!-- IMAGE + TOOLTIP: Player avatar — Base outfit -->
+        <!-- IMAGE + TOOLTIP TEXT: Player avatar — Base outfit -->
         <div class="media" style="aspect-ratio: 2/3; background: linear-gradient(160deg, #E8956B, #F2D38A);">
           <span class="media-label">Player avatar — Base outfit</span>
         </div>
@@ -666,7 +664,7 @@
       </div>
 
       <div class="gallery-item" data-category="smaller-works" data-subcategory="animation" data-title="Animation loop — Idle breathing" data-desc="Short looping animation test exploring subtle idle motion for a cute character base.">
-        <!-- IMAGE + TOOLTIP: Animation loop — Idle breathing -->
+        <!-- IMAGE + TOOLTIP TEXT: Animation loop — Idle breathing -->
         <div class="media" style="aspect-ratio: 9/16; background: linear-gradient(160deg, #8FA88A, #BFD4BA);">
           <span class="media-label">Animation loop — Idle breathing</span>
         </div>
@@ -677,7 +675,7 @@
       </div>
 
       <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="expressions" data-title="Mira — Expression sheet" data-desc="Full expression set for Mira, built for Live2D parameter mapping and idle reactions.">
-        <!-- IMAGE + TOOLTIP: Mira — Expression sheet -->
+        <!-- IMAGE + TOOLTIP TEXT: Mira — Expression sheet -->
         <div class="media" style="aspect-ratio: 4/3; background: linear-gradient(160deg, #C4613A, #F2D38A);">
           <span class="media-label">Mira — Expression sheet</span>
         </div>
@@ -688,7 +686,7 @@
       </div>
 
       <div class="gallery-item" data-category="girl-design" data-subcategory="final" data-title="Girl Design — Final render" data-desc="Finished character render, prepared for the Gamescom showcase materials.">
-        <!-- IMAGE + TOOLTIP: Girl Design — Final render -->
+        <!-- IMAGE + TOOLTIP TEXT: Girl Design — Final render -->
         <div class="media" style="aspect-ratio: 3/4; background: linear-gradient(160deg, #D85A30, #F0997B);">
           <span class="media-label">Girl Design — Final render</span>
         </div>
@@ -699,7 +697,7 @@
       </div>
 
       <div class="gallery-item" data-category="smaller-works" data-subcategory="studies" data-title="Character study — Warm light" data-desc="Personal study focused on lighting and rendering under warm, low-key light.">
-        <!-- IMAGE + TOOLTIP: Character study — Warm light -->
+        <!-- IMAGE + TOOLTIP TEXT: Character study — Warm light -->
         <div class="media" style="aspect-ratio: 1/1; background: linear-gradient(160deg, #E8E2D6, #C4613A);">
           <span class="media-label">Character study — Warm light</span>
         </div>
@@ -710,7 +708,7 @@
       </div>
 
       <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="characters" data-title="Tofu vendor NPC" data-desc="Background NPC design focused on quick silhouette variety for market crowd scenes.">
-        <!-- IMAGE + TOOLTIP: Tofu vendor NPC -->
+        <!-- IMAGE + TOOLTIP TEXT: Tofu vendor NPC -->
         <div class="media" style="aspect-ratio: 3/4; background: linear-gradient(160deg, #8FA88A, #E8956B);">
           <span class="media-label">Tofu vendor NPC</span>
         </div>
@@ -721,7 +719,7 @@
       </div>
 
       <div class="gallery-item" data-category="girl-design" data-subcategory="concept" data-title="Girl Design — Color exploration" data-desc="Palette tests exploring different moods for the same base design.">
-        <!-- IMAGE + TOOLTIP: Girl Design — Color exploration -->
+        <!-- IMAGE + TOOLTIP TEXT: Girl Design — Color exploration -->
         <div class="media" style="aspect-ratio: 1/1; background: linear-gradient(160deg, #F0BFBF, #3B3A5C);">
           <span class="media-label">Girl Design — Color exploration</span>
         </div>
@@ -732,7 +730,7 @@
       </div>
 
       <div class="gallery-item" data-category="smaller-works" data-subcategory="animation" data-title="Sprite sheet — Walk cycle" data-desc="Eight-frame walk cycle sprite sheet built for a 2D side-scrolling prototype.">
-        <!-- IMAGE + TOOLTIP: Sprite sheet — Walk cycle -->
+        <!-- IMAGE + TOOLTIP TEXT: Sprite sheet — Walk cycle -->
         <div class="media" style="aspect-ratio: 16/9; background: linear-gradient(160deg, #6A6792, #BFD4BA);">
           <span class="media-label">Sprite sheet — Walk cycle</span>
         </div>
@@ -743,7 +741,7 @@
       </div>
 
       <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="promo" data-title="Festival poster concept" data-desc="In-world poster design for the lantern festival event, doubling as a piece of environmental storytelling.">
-        <!-- IMAGE + TOOLTIP: Festival poster concept -->
+        <!-- IMAGE + TOOLTIP TEXT: Festival poster concept -->
         <div class="media" style="aspect-ratio: 2/3; background: linear-gradient(160deg, #F2D38A, #C4613A);">
           <span class="media-label">Festival poster concept</span>
         </div>
@@ -754,7 +752,7 @@
       </div>
 
       <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="expressions" data-title="Vendor reaction set" data-desc="Reaction poses for background vendors, reused across multiple NPC bases to keep the market feeling lively.">
-        <!-- IMAGE + TOOLTIP: Vendor reaction set -->
+        <!-- IMAGE + TOOLTIP TEXT: Vendor reaction set -->
         <div class="media" style="aspect-ratio: 4/3; background: linear-gradient(160deg, #E8956B, #8FA88A);">
           <span class="media-label">Vendor reaction set</span>
         </div>
@@ -765,7 +763,7 @@
       </div>
 
       <div class="gallery-item" data-category="girl-design" data-subcategory="final" data-title="Girl Design — Turnaround" data-desc="Front, side, and back views used for the modeling and animation handoff.">
-        <!-- IMAGE + TOOLTIP: Girl Design — Turnaround -->
+        <!-- IMAGE + TOOLTIP TEXT: Girl Design — Turnaround -->
         <div class="media" style="aspect-ratio: 16/9; background: linear-gradient(160deg, #3B3A5C, #D98C8C);">
           <span class="media-label">Girl Design — Turnaround</span>
         </div>
@@ -776,7 +774,7 @@
       </div>
 
       <div class="gallery-item" data-category="smaller-works" data-subcategory="studies" data-title="Fan art — Cozy café" data-desc="Personal piece exploring a cozy interior palette and soft character lighting.">
-        <!-- IMAGE + TOOLTIP: Fan art — Cozy café -->
+        <!-- IMAGE + TOOLTIP TEXT: Fan art — Cozy café -->
         <div class="media" style="aspect-ratio: 4/3; background: linear-gradient(160deg, #F2E0D8, #8FA88A);">
           <span class="media-label">Fan art — Cozy café</span>
         </div>
@@ -854,32 +852,32 @@
   <div class="tooltip-text">
     <p class="tooltip-title" id="tooltipTitle"></p>
     <p class="tooltip-desc" id="tooltipDesc"></p>
+    <p class="tooltip-link" id="tooltipLink"></p>
   </div>
 </div>
 
 <script>
   const navButtons   = document.querySelectorAll('.nav-btn[data-view]');
-  const selectables  = document.querySelectorAll('[data-view]');
   const galleryItems = document.querySelectorAll('.gallery-item');
 
   const galleryHeader = document.getElementById('galleryHeader');
   const galleryTitle  = document.getElementById('galleryTitle');
   const galleryDesc   = document.getElementById('galleryDesc');
 
-  const coversGrid     = document.getElementById('coversGrid');
+  const landingGallery = document.getElementById('landingGallery');
   const gallery        = document.getElementById('gallery');
   const aboutSection   = document.getElementById('aboutSection');
   const contactSection = document.getElementById('contactSection');
 
   const sidebar         = document.getElementById('sidebar');
-  const menuToggle       = document.getElementById('menuToggle');
+  const menuToggle      = document.getElementById('menuToggle');
   const sidebarBackdrop = document.getElementById('sidebarBackdrop');
 
   const ALL_WORK_TITLE = 'All work';
-  const ALL_WORK_DESC  = 'A mix of character work for Twilight Bazaar, recent illustration for Girl Design, and smaller personal pieces — click through for the full gallery.';
+  const ALL_WORK_DESC  = 'A mix of character work for Twilight Bazaar, recent illustration for Girl Design, and smaller personal pieces — hover for details, click to explore.';
 
   function applyFilter(cat, sub) {
-    galleryItems.forEach(item => {
+    gallery.querySelectorAll('.gallery-item').forEach(item => {
       const matchCat = item.dataset.category === cat;
       const matchSub = !sub || item.dataset.subcategory === sub;
       item.style.display = (matchCat && matchSub) ? '' : 'none';
@@ -914,7 +912,7 @@
     const sub   = el.dataset.sub;
     const label = el.dataset.label;
 
-    coversGrid.style.display     = (view === 'all') ? '' : 'none';
+    landingGallery.style.display = (view === 'all') ? '' : 'none';
     gallery.style.display         = (view === 'category') ? '' : 'none';
     aboutSection.style.display   = (view === 'about') ? '' : 'none';
     contactSection.style.display = (view === 'contact') ? '' : 'none';
@@ -942,21 +940,52 @@
     sidebarBackdrop.classList.remove('open');
   }
 
-  selectables.forEach(el => el.addEventListener('click', () => setView(el)));
+  /* ---- Click handling ----
+     If an item has data-link, it opens that URL in a new tab.
+     Otherwise, if it has data-view, it navigates within the page. */
+  function handleClick(el) {
+    if (el.dataset.link) {
+      window.open(el.dataset.link, '_blank', 'noopener');
+      return;
+    }
+    if (el.dataset.view) {
+      setView(el);
+    }
+  }
+
+  document.querySelectorAll('[data-view], .gallery-item[data-link]').forEach(el => {
+    el.addEventListener('click', () => handleClick(el));
+  });
 
   /* ---- Cursor-following tooltip ---- */
   const tooltip      = document.getElementById('cursorTooltip');
   const tooltipMedia = document.getElementById('tooltipMedia');
   const tooltipTitle = document.getElementById('tooltipTitle');
   const tooltipDesc  = document.getElementById('tooltipDesc');
+  const tooltipLink  = document.getElementById('tooltipLink');
 
   galleryItems.forEach(item => {
     const media = item.querySelector('.media');
+    const showImage = item.dataset.tooltip === 'image';
 
     item.addEventListener('mouseenter', () => {
-      tooltipTitle.textContent = item.dataset.title;
-      tooltipDesc.textContent  = item.dataset.desc;
-      tooltipMedia.style.background = media.style.background;
+      tooltipTitle.textContent = item.dataset.title || '';
+      tooltipDesc.textContent  = item.dataset.desc || '';
+
+      if (showImage) {
+        tooltipMedia.style.display = 'block';
+        tooltipMedia.style.background = media.style.background;
+      } else {
+        tooltipMedia.style.display = 'none';
+      }
+
+      if (item.dataset.link) {
+        tooltipLink.textContent = item.dataset.linkText || 'Click to view ↗';
+        tooltipLink.style.display = 'block';
+      } else {
+        tooltipLink.style.display = 'none';
+      }
+
       tooltip.classList.add('visible');
     });
 
