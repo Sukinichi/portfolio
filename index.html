@@ -6,82 +6,119 @@
 <title>Work</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
 
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #FFF6E9;
-    --surface: #FFFDF8;
-    --surface-2: #FFE7C8;
-    --ink: #171717;
-    --ink-muted: #544F49;
-    --ink-faint: #7D776F;
-    --accent: #FF8CC4;
-    --accent-2: #7EDCFF;
-    --accent-3: #FFD86A;
-    --outline: #171717;
-    --border: rgba(23,23,23,0.18);
-    --shadow: 0 6px 0 #171717;
-    --display: 'Baloo 2', 'Trebuchet MS', sans-serif;
-    --body: 'Nunito', 'Segoe UI', sans-serif;
+    --bg: #FFF6E5;
+    --surface: #FFFDF7;
+    --ink: #2B2A28;
+    --ink-muted: #6B6760;
+    --ink-faint: #A09D99;
+    --accent: #FFC233;
+    --accent-light: #FFF1C2;
+    --outline: #2B2A28;
+    --border: rgba(43,41,38,0.15);
+    --pop: 0 5px 0 var(--outline);
+    --pop-hover: 0 9px 0 var(--outline);
+    --serif: 'Baloo 2', system-ui, sans-serif;   /* display / heading font — rounded & chunky */
+    --sans: 'Nunito', system-ui, sans-serif;     /* body font — rounded sans */
   }
 
   html, body {
-    font-family: var(--body);
-    background:
-      radial-gradient(circle at top, rgba(255, 211, 110, 0.18), transparent 25%),
-      linear-gradient(135deg, var(--bg) 0%, #FFF9F1 45%, #FFE7C8 100%);
+    font-family: var(--sans);
+    background-color: var(--bg);
+    background-image: radial-gradient(circle, rgba(43,41,38,0.045) 1.5px, transparent 1.5px);
+    background-size: 22px 22px;
     color: var(--ink);
   }
   body { font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
 
+  /* DAISY BACKGROUND — decorative layer of scattered flower silhouettes,
+     generated fresh by JS on every page load (see generateDaisyField()
+     near the top of the <script> block) so the count and spread always
+     match the page's actual scrollable height. Absolute-positioned within
+     the page (not fixed), so it scrolls along with the rest of the content
+     instead of staying pinned to the viewport. Purely decorative, low
+     opacity. Each daisy gently sways in place via the sway/bob animation
+     below, so they feel alive as you scroll past. */
+  .daisy-field {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* height is set inline by JS to match the page's full scrollable height */
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .daisy-field svg {
+    position: absolute;
+    opacity: 0.55;
+    transform-origin: 60px 60px;
+    animation: daisy-sway 6s ease-in-out infinite;
+  }
+
+  /* A few alternating timing/delay variants so the daisies don't all
+     sway in unison — keeps the motion feeling organic rather than mechanical */
+  .daisy-field svg:nth-of-type(2n) { animation-duration: 7.5s; animation-delay: -1.2s; }
+  .daisy-field svg:nth-of-type(3n) { animation-duration: 5.2s; animation-delay: -2.6s; }
+  .daisy-field svg:nth-of-type(4n) { animation-duration: 8.4s; animation-delay: -0.6s; }
+  .daisy-field svg:nth-of-type(5n) { animation-duration: 6.7s; animation-delay: -3.4s; }
+
+  @keyframes daisy-sway {
+    0%, 100% { transform: translate(-50%, -50%) rotate(var(--base-rotate, 0deg)); }
+    50%      { transform: translate(-50%, calc(-50% - 6px)) rotate(calc(var(--base-rotate, 0deg) + 4deg)); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .daisy-field svg { animation: none; }
+  }
+
   /* LAYOUT */
-  .layout { display: flex; min-height: 100vh; }
+  .layout { display: flex; min-height: 100vh; position: relative; z-index: 1; }
 
   /* SIDEBAR */
   .sidebar {
     position: fixed;
     top: 0; left: 0; bottom: 0;
-    width: 268px;
-    background: linear-gradient(180deg, #FFFDF9 0%, #FFF6E9 100%);
-    border: 3px solid var(--outline);
-    border-left: 0;
-    border-top: 0;
-    border-bottom: 0;
-    border-radius: 0 24px 24px 0;
-    box-shadow: var(--shadow);
+    width: 260px;
+    background: var(--surface);
+    border-right: 3px solid var(--outline);
     display: flex;
     flex-direction: column;
-    padding: 2.5rem 0.75rem 1.25rem;
-    overflow-y: hidden;
+    padding: 2.5rem 1.5rem 1.5rem;
+    overflow-y: auto;
     z-index: 50;
     transition: transform 0.3s ease;
   }
 
   .sidebar-top .logo {
-    font-family: var(--display);
-    font-size: 1.5rem;
+    font-family: var(--serif);
+    font-weight: 800;
+    font-size: 1.6rem;
     color: var(--ink);
     text-decoration: none;
-    display: block;
+    text-shadow: 2px 2px 0 var(--accent);
+    display: inline-block;
   }
 
   .sidebar-top .tagline {
     font-size: 0.8rem;
-    font-weight: 300;
+    font-weight: 400;
     color: var(--ink-muted);
-    margin-top: 0.35rem;
+    margin-top: 0.5rem;
     line-height: 1.5;
   }
 
   .sidebar-nav {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
-    padding: 0 0.35rem;
+    gap: 0.15rem;
   }
 
   .sidebar-section-label {
@@ -97,120 +134,64 @@
   .nav-btn {
     all: unset;
     cursor: pointer;
-    font-family: var(--body);
-    font-size: 0.875rem;
-    font-weight: 500;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 600;
     color: var(--ink-muted);
-    padding: 0.45rem 0.35rem;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    background: transparent;
+    padding: 0.6rem 0.85rem;
+    border-radius: 0.85rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 0.45rem;
-    transition: color 0.15s ease, background 0.15s ease;
+    gap: 0.5rem;
+    border: 3px solid transparent;
+    border-bottom-width: 5px;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
     width: 100%;
   }
 
-  .sidebar > .sidebar-nav > .nav-btn[data-view="all"],
-  .sidebar > .sidebar-nav > .nav-btn[data-view="about"],
-  .sidebar > .sidebar-nav > .nav-btn[data-view="contact"] {
-    border: 2px solid var(--outline);
-    border-radius: 12px;
-    box-shadow: 0 3px 0 var(--outline);
-    background: linear-gradient(180deg, #FFFDF9 0%, #FFF1DA 100%);
-    padding: 0.55rem 0.65rem;
-    width: auto;
-    max-width: 100%;
-  }
-
-  .nav-btn:hover {
-    background: rgba(255, 211, 110, 0.18);
-    color: var(--ink);
-  }
-
-  .sidebar > .sidebar-nav > .nav-btn[data-view="all"]:hover,
-  .sidebar > .sidebar-nav > .nav-btn[data-view="about"]:hover,
-  .sidebar > .sidebar-nav > .nav-btn[data-view="contact"]:hover {
-    background: linear-gradient(180deg, #FFF3E2 0%, #FFD88C 100%);
-  }
+  .nav-btn:hover { background: var(--accent-light); color: var(--ink); }
 
   .nav-btn.active {
-    background: rgba(255, 140, 196, 0.14);
+    background: var(--accent);
     color: var(--ink);
-    box-shadow: none;
+    font-weight: 700;
+    border-color: var(--outline);
   }
-
-  .sidebar > .sidebar-nav > .nav-btn[data-view="all"].active,
-  .sidebar > .sidebar-nav > .nav-btn[data-view="about"].active,
-  .sidebar > .sidebar-nav > .nav-btn[data-view="contact"].active {
-    background: linear-gradient(180deg, #FFE39A 0%, #FFBEA2 100%);
-    box-shadow: 0 3px 0 var(--outline);
-  }
-
-  .nav-btn .chevron {
-    width: 14px;
-    height: 14px;
-    flex-shrink: 0;
-    transition: transform 0.25s ease;
-  }
-
-  .nav-group.open > .nav-btn .chevron { transform: rotate(90deg); }
-
-  .nav-sub {
-    display: grid;
-    grid-template-rows: 0fr;
-    overflow: hidden;
-    transition: grid-template-rows 0.3s ease;
-    padding-left: 0;
-    margin-left: 0;
-  }
-
-  .nav-group.open .nav-sub { grid-template-rows: 1fr; }
-
-  .nav-sub-inner {
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    min-height: 0;
-    padding: 0.15rem 0 0;
-  }
-
-  .nav-sub .nav-btn { font-size: 0.8125rem; padding: 0.45rem 0.6rem; }
-  .nav-group { padding: 0; }
 
   /* SIDEBAR SOCIALS */
   .sidebar-bottom {
     margin-top: auto;
     padding-top: 1.5rem;
-    border-top: 1px solid var(--border);
+    border-top: 3px solid var(--outline);
     display: flex;
-    gap: 0.6rem;
+    gap: 0.7rem;
     flex-wrap: wrap;
   }
 
   .social-icon {
     width: 40px;
     height: 40px;
-    border-radius: 12px;
-    border: 2px solid var(--outline);
-    box-shadow: 0 4px 0 var(--outline);
-    background: linear-gradient(180deg, #FFFDF9 0%, #FFE7C8 100%);
+    border-radius: 50%;
+    background: var(--surface);
+    border: 3px solid var(--outline);
+    border-bottom-width: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--ink-muted);
+    color: var(--ink);
     text-decoration: none;
     font-size: 0.7rem;
-    font-weight: 500;
+    font-weight: 700;
     letter-spacing: 0.02em;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0.15s, transform 0.1s, border-bottom-width 0.1s;
   }
 
-  .social-icon:hover { background: linear-gradient(180deg, #FFD279 0%, #FF9CC8 100%); color: var(--ink); }
+  .social-icon:hover {
+    background: var(--accent);
+    transform: translateY(2px);
+    border-bottom-width: 3px;
+  }
 
   /* MOBILE MENU TOGGLE */
   .menu-toggle {
@@ -218,11 +199,11 @@
     position: fixed;
     top: 1rem; left: 1rem;
     z-index: 60;
-    width: 46px; height: 46px;
-    border-radius: 14px;
-    background: linear-gradient(180deg, #FFFDF9 0%, #FFE7C8 100%);
-    border: 2px solid var(--outline);
-    box-shadow: 0 4px 0 var(--outline);
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 3px solid var(--outline);
+    border-bottom-width: 5px;
     align-items: center;
     justify-content: center;
     cursor: pointer;
@@ -256,21 +237,27 @@
     flex: 1;
     padding: 2.5rem 2.5rem 5rem;
     min-width: 0;
+    background: transparent;
+    position: relative;
+    z-index: 1;
   }
 
   .gallery-header { margin-bottom: 2rem; }
 
   .gallery-header h1 {
-    font-family: var(--display);
-    font-size: 2rem;
+    font-family: var(--serif);
+    font-weight: 800;
+    font-size: 2.1rem;
     color: var(--ink);
+    text-shadow: 3px 3px 0 var(--accent);
+    display: inline-block;
   }
 
   .gallery-header p {
-    font-size: 0.875rem;
-    font-weight: 300;
+    font-size: 0.9rem;
+    font-weight: 400;
     color: var(--ink-muted);
-    margin-top: 0.35rem;
+    margin-top: 0.5rem;
     max-width: 520px;
   }
 
@@ -286,41 +273,46 @@
     cursor: pointer;
   }
 
-  .gallery-item .media {
+  /* Shared base for every media block — thick outline + flat "pop" shadow */
+  .media {
+    position: relative;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 22px;
-    border: 3px solid var(--outline);
-    box-shadow: 0 8px 0 var(--outline);
     overflow: hidden;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-    position: relative;
-    background-size: cover;
-    background-position: center;
+    border: 3px solid var(--outline);
+    border-radius: 1.25rem;
+    box-shadow: var(--pop);
+    background-color: var(--surface);
+  }
+
+  .gallery-item .media {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
   .gallery-item:hover .media {
-    transform: translateY(-2px) scale(1.01);
-    box-shadow: 0 10px 0 var(--outline);
+    transform: translateY(-4px);
+    box-shadow: var(--pop-hover);
   }
 
-  #gallery .media-label { display: none; }
-  #landingGallery .media-label { display: none; }
-
+  /* Sticker-style tag in the corner of each media block */
   .media-label {
-    font-family: var(--body);
-    font-size: 0.78rem;
+    position: absolute;
+    left: 0.6rem;
+    bottom: 0.6rem;
+    max-width: calc(100% - 1.2rem);
+    background: var(--surface);
+    border: 2.5px solid var(--outline);
+    border-bottom-width: 4px;
+    border-radius: 0.6rem;
+    padding: 0.3rem 0.65rem;
+    font-family: var(--sans);
+    font-size: 0.7rem;
     font-weight: 700;
-    letter-spacing: 0.04em;
-    color: #171717;
-    text-align: center;
-    padding: 0.35rem 0.65rem;
-    border: 2px solid rgba(23,23,23,0.95);
-    border-radius: 999px;
-    background: rgba(255,255,255,0.75);
-    backdrop-filter: blur(4px);
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    text-align: left;
     text-shadow: none;
   }
 
@@ -339,18 +331,13 @@
   .page-content.reverse .page-text { order: 1; }
   .page-content.reverse .page-media { order: 2; }
 
-  .page-media .media {
-    border-radius: 0.85rem;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
   .page-text h2 {
-    font-family: var(--display);
+    font-family: var(--serif);
+    font-weight: 800;
     font-size: 2.2rem;
     color: var(--ink);
+    text-shadow: 3px 3px 0 var(--accent);
+    display: inline-block;
     margin-bottom: 1.25rem;
   }
 
@@ -373,21 +360,27 @@
   }
 
   .skill-chip {
-    background: linear-gradient(180deg, #FFFDF9 0%, #FFF1DA 100%);
-    border: 2px solid var(--outline);
-    border-radius: 16px;
-    box-shadow: 0 4px 0 var(--outline);
+    background: var(--surface);
+    border: 2.5px solid var(--outline);
+    border-bottom-width: 4px;
+    border-radius: 0.85rem;
     padding: 0.65rem 1rem;
     font-size: 0.8125rem;
     color: var(--ink-muted);
-    font-weight: 400;
+    font-weight: 500;
   }
+
+  .skill-chip:nth-child(1) { background: #FFE3D6; }
+  .skill-chip:nth-child(2) { background: #DFF5E8; }
+  .skill-chip:nth-child(3) { background: #E3F3FA; }
+  .skill-chip:nth-child(4) { background: #FCE6F0; }
 
   .skill-chip strong {
     display: block;
-    font-weight: 500;
+    font-family: var(--serif);
+    font-weight: 700;
     color: var(--ink);
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     margin-bottom: 0.15rem;
   }
 
@@ -404,18 +397,20 @@
   .contact-detail a {
     color: var(--ink);
     text-decoration: none;
-    font-weight: 400;
-    border-bottom: 1px solid var(--border);
-    transition: color 0.2s, border-color 0.2s;
+    font-weight: 700;
+    border-bottom: 2px solid var(--outline);
+    border-radius: 0.2rem;
+    transition: background 0.2s, color 0.2s;
   }
 
-  .contact-detail a:hover { color: var(--accent); border-color: var(--accent); }
+  .contact-detail a:hover { background: var(--accent-light); }
 
   .contact-dot {
-    width: 6px;
-    height: 6px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: var(--accent);
+    border: 2px solid var(--outline);
     flex-shrink: 0;
   }
 
@@ -425,10 +420,11 @@
     top: 0; left: 0;
     transform: translate(-9999px, -9999px);
     width: 250px;
-    background: linear-gradient(180deg, #FFFDF9 0%, #FFF6E9 100%);
-    border: 2px solid var(--outline);
-    border-radius: 18px;
-    box-shadow: 0 8px 0 var(--outline);
+    background: var(--surface);
+    border: 3px solid var(--outline);
+    border-bottom-width: 6px;
+    border-radius: 1.1rem;
+    box-shadow: var(--pop);
     overflow: hidden;
     pointer-events: none;
     opacity: 0;
@@ -450,26 +446,32 @@
   }
 
   .cursor-tooltip .tooltip-title {
-    font-size: 0.875rem;
-    font-weight: 500;
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-weight: 700;
     color: var(--ink);
     margin-bottom: 0.3rem;
   }
 
   .cursor-tooltip .tooltip-desc {
     font-size: 0.8rem;
-    font-weight: 300;
+    font-weight: 400;
     color: var(--ink-muted);
     line-height: 1.55;
   }
 
   /* Custom message shown when an item has an external link */
   .cursor-tooltip .tooltip-link {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--accent);
-    margin-top: 0.6rem;
     display: none;
+    margin-top: 0.6rem;
+    background: var(--accent);
+    border: 2px solid var(--outline);
+    border-radius: 0.6rem;
+    padding: 0.2rem 0.6rem;
+    font-family: var(--serif);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--ink);
   }
 
   /* LIGHTBOX — full-view popup for project-page media without an external link */
@@ -499,15 +501,16 @@
     gap: 2rem;
     max-width: 92vw;
     max-height: 88vh;
-    background: linear-gradient(180deg, #FFFDF9 0%, #FFF6E9 100%);
-    border: 3px solid var(--outline);
-    border-radius: 24px;
+    background: var(--surface);
+    border: 4px solid var(--outline);
+    border-bottom-width: 8px;
+    border-radius: 1.5rem;
     padding: 1.75rem;
-    box-shadow: 0 10px 0 var(--outline);
   }
 
   .lightbox-media {
-    border-radius: 0.75rem;
+    border: 3px solid var(--outline);
+    border-radius: 1rem;
     max-width: 100%;
     max-height: 100%;
     min-width: 0;
@@ -523,7 +526,7 @@
   }
 
   .lightbox-media .media-label {
-    display: none;
+    font-size: 1.05rem;
   }
 
   .lightbox-caption {
@@ -535,7 +538,8 @@
   }
 
   .lightbox-caption .lightbox-title {
-    font-family: var(--display);
+    font-family: var(--serif);
+    font-weight: 700;
     font-size: 1.4rem;
     color: var(--ink);
     margin-bottom: 0.6rem;
@@ -543,7 +547,7 @@
 
   .lightbox-caption .lightbox-desc {
     font-size: 0.875rem;
-    font-weight: 300;
+    font-weight: 400;
     color: var(--ink-muted);
     line-height: 1.7;
   }
@@ -554,10 +558,10 @@
     right: 1.5rem;
     width: 42px;
     height: 42px;
-    border-radius: 12px;
-    border: 2px solid var(--outline);
-    background: linear-gradient(180deg, #FFFDF9 0%, #FFE7C8 100%);
-    box-shadow: 0 4px 0 var(--outline);
+    border-radius: 50%;
+    border: 3px solid var(--outline);
+    border-bottom-width: 5px;
+    background: var(--surface);
     color: var(--ink);
     font-size: 1.25rem;
     line-height: 1;
@@ -566,10 +570,14 @@
     align-items: center;
     justify-content: center;
     z-index: 2;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0.15s, transform 0.1s, border-bottom-width 0.1s;
   }
 
-  .lightbox-close:hover { background: var(--accent); color: #fff; }
+  .lightbox-close:hover {
+    background: var(--accent);
+    transform: translateY(2px);
+    border-bottom-width: 3px;
+  }
 
   .lightbox-arrow {
     position: absolute;
@@ -577,10 +585,10 @@
     transform: translateY(-50%);
     width: 48px;
     height: 48px;
-    border-radius: 14px;
-    border: 2px solid var(--outline);
-    background: linear-gradient(180deg, #FFFDF9 0%, #FFE7C8 100%);
-    box-shadow: 0 4px 0 var(--outline);
+    border-radius: 50%;
+    border: 3px solid var(--outline);
+    border-bottom-width: 5px;
+    background: var(--surface);
     color: var(--ink);
     font-size: 1.5rem;
     line-height: 1;
@@ -589,12 +597,60 @@
     align-items: center;
     justify-content: center;
     z-index: 2;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0.15s, transform 0.1s, border-bottom-width 0.1s;
   }
 
-  .lightbox-arrow:hover { background: var(--accent); color: #fff; }
+  .lightbox-arrow:hover {
+    background: var(--accent);
+    transform: translateY(-50%) translateY(2px);
+    border-bottom-width: 3px;
+  }
+
   .lightbox-arrow.prev { left: 1.5rem; }
   .lightbox-arrow.next { right: 1.5rem; }
+
+  /* SECTION DIVIDERS — mark the transition between continuous scroll sections */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 3.5rem 0 2.25rem;
+  }
+
+  .section-divider:first-of-type { margin-top: 0; }
+
+  .section-divider .divider-line {
+    flex: 1;
+    height: 4px;
+    background: var(--outline);
+    border-radius: 4px;
+  }
+
+  .section-divider .divider-badge {
+    flex-shrink: 0;
+    background: var(--accent);
+    border: 3px solid var(--outline);
+    border-bottom-width: 5px;
+    border-radius: 0.85rem;
+    padding: 0.5rem 1.1rem;
+  }
+
+  .section-divider .divider-title {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--ink);
+  }
+
+  .content-section { scroll-margin-top: 1.5rem; }
+
+  .content-section .section-intro {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--ink-muted);
+    margin-bottom: 1.5rem;
+    max-width: 520px;
+  }
 
   /* RESPONSIVE */
   @media (max-width: 1100px) {
@@ -625,10 +681,10 @@
       overflow-y: auto;
     }
     .lightbox-caption { width: auto; }
-    .lightbox-arrow { width: 40px; height: 40px; font-size: 1.25rem; }
+    .lightbox-arrow { width: 40px; height: 40px; font-size: 1.25rem; border-bottom-width: 4px; }
     .lightbox-arrow.prev { left: 0.5rem; }
     .lightbox-arrow.next { right: 0.5rem; }
-    .lightbox-close { top: 0.75rem; right: 0.75rem; }
+    .lightbox-close { top: 0.75rem; right: 0.75rem; border-bottom-width: 4px; }
   }
 
   @media (hover: none) {
@@ -638,22 +694,29 @@
       padding: 0.6rem 0.1rem 0;
     }
     .caption-title {
-      font-size: 0.85rem;
-      font-weight: 500;
+      font-family: var(--serif);
+      font-size: 0.9rem;
+      font-weight: 700;
       color: var(--ink);
       margin-bottom: 0.2rem;
     }
     .caption-desc {
       font-size: 0.8rem;
-      font-weight: 300;
+      font-weight: 400;
       color: var(--ink-muted);
       line-height: 1.5;
     }
     .caption-link {
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--accent);
-      margin-top: 0.35rem;
+      display: inline-block;
+      margin-top: 0.4rem;
+      background: var(--accent);
+      border: 2px solid var(--outline);
+      border-radius: 0.6rem;
+      padding: 0.2rem 0.6rem;
+      font-family: var(--serif);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--ink);
     }
   }
 </style>
@@ -676,28 +739,36 @@
   - "TOOLTIP:"  the data-title / data-desc attributes on each
                 gallery item. These power BOTH the caption (mobile)
                 and the cursor tooltip (desktop) — edit once, updates both.
-
-                On the LANDING PAGE (#landingGallery), the tooltip also
-                shows the image (because of data-tooltip="image").
-                On PROJECT PAGES (#gallery), the tooltip shows text only.
+                The tooltip is text-only everywhere now (no image preview),
+                since the artwork is always visible in the grid.
 
   - "LINK:"     optional. Add data-link="https://..." to make an item
                 open an external page when clicked, and data-link-text="..."
                 to customize the message shown in the tooltip/caption
-                (e.g. "View on itch.io ↗"). Items without data-link
-                on the landing page instead navigate to their project
-                gallery when clicked.
+                (e.g. "View on itch.io ↗").
 
-  - "LIGHTBOX:" on project pages (#gallery), any item WITHOUT data-link
-                opens a full-view popup when clicked — background blurs,
-                the media scales to fit the screen, and the title/description
-                sit beside it. Move between pieces with the on-screen
-                arrows, the ← → keys, or the scroll wheel. Click outside
-                the image, press Esc, or use the × button to close.
+  - "LIGHTBOX:" any gallery item WITHOUT data-link opens a full-view popup
+                when clicked — background blurs, the media scales to fit
+                the screen, and the title/description sit beside it. Move
+                between pieces with the on-screen arrows, the ← → keys, or
+                the scroll wheel — this cycles through every such item on
+                the page, in the order they appear top to bottom. Click
+                outside the image, press Esc, or use the × button to close.
                 Items WITH data-link skip this and open their external
                 link instead.
+
+  - "SCROLL NAV:" the whole page is one continuous scroll now. Sidebar
+                buttons smooth-scroll to their section (data-target
+                matches a section's id). As you scroll, whichever section
+                is currently in view gets highlighted automatically in the
+                sidebar — no clicking needed to update the active state.
   ============================================================
 -->
+
+<!-- Decorative daisy field — generated by JS on load so it always covers
+     the full scrollable page height, no matter how tall the content gets.
+     See the DAISY GENERATION script near the bottom of the page. -->
+<div class="daisy-field" id="daisyField" aria-hidden="true"></div>
 
 <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation"><span></span></button>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
@@ -707,60 +778,22 @@
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-top">
       <!-- TEXT: your name -->
-      <a class="logo" href="#">Playful Portfolio</a>
+      <a class="logo" href="#">Your Name</a>
       <!-- TEXT: short tagline -->
-      <p class="tagline">Cute character art<br />Rounded, outlined, game-ready vibes</p>
+      <p class="tagline">Character artist &amp; animator<br />Cute aesthetics · Live2D</p>
     </div>
 
     <nav class="sidebar-nav">
-      <button class="nav-btn active" data-view="all" data-label="All work">All work</button>
-
-      <p class="sidebar-section-label">Projects</p>
-
-      <div class="nav-group">
-        <button class="nav-btn" data-view="category" data-cat="twilight-bazaar" data-label="Twilight Bazaar">
-          <span>Twilight Bazaar</span>
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </button>
-        <div class="nav-sub">
-          <div class="nav-sub-inner">
-            <button class="nav-btn" data-view="category" data-cat="twilight-bazaar" data-sub="characters" data-label="Character designs">Character designs</button>
-            <button class="nav-btn" data-view="category" data-cat="twilight-bazaar" data-sub="expressions" data-label="Expression sheets">Expression sheets</button>
-            <button class="nav-btn" data-view="category" data-cat="twilight-bazaar" data-sub="promo" data-label="Promo art">Promo art</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="nav-group">
-        <button class="nav-btn" data-view="category" data-cat="girl-design" data-label="Girl Design">
-          <span>Girl Design</span>
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </button>
-        <div class="nav-sub">
-          <div class="nav-sub-inner">
-            <button class="nav-btn" data-view="category" data-cat="girl-design" data-sub="concept" data-label="Concept">Concept</button>
-            <button class="nav-btn" data-view="category" data-cat="girl-design" data-sub="final" data-label="Final art">Final art</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="nav-group">
-        <button class="nav-btn" data-view="category" data-cat="smaller-works" data-label="Smaller works">
-          <span>Smaller works</span>
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </button>
-        <div class="nav-sub">
-          <div class="nav-sub-inner">
-            <button class="nav-btn" data-view="category" data-cat="smaller-works" data-sub="studies" data-label="Studies">Studies</button>
-            <button class="nav-btn" data-view="category" data-cat="smaller-works" data-sub="animation" data-label="Animation tests">Animation tests</button>
-          </div>
-        </div>
-      </div>
+      <p class="sidebar-section-label">Works</p>
+      <button class="nav-btn active" data-target="section-twilight-bazaar" data-label="Twilight Bazaar">Twilight Bazaar</button>
+      <button class="nav-btn" data-target="section-girl-design" data-label="Girl Design">Girl Design</button>
+      <button class="nav-btn" data-target="section-smaller-works" data-label="Smaller works">Smaller works</button>
 
       <p class="sidebar-section-label">Pages</p>
-      <button class="nav-btn" data-view="about" data-label="About">About</button>
-      <button class="nav-btn" data-view="contact" data-label="Contact">Contact</button>
+      <button class="nav-btn" data-target="section-about" data-label="About">About</button>
+      <button class="nav-btn" data-target="section-contact" data-label="Contact">Contact</button>
     </nav>
+
 
     <div class="sidebar-bottom">
       <!-- TEXT: link these to your real profiles -->
@@ -772,243 +805,243 @@
     </div>
   </aside>
 
-  <main class="main">
+  <main class="main" id="mainScroll">
 
-    <header class="gallery-header" id="galleryHeader">
-      <h1 id="galleryTitle">All work</h1>
-      <!-- TEXT: short intro shown above the landing gallery -->
-      <p id="galleryDesc">A soft, playful portfolio with bold outlines, rounded cards, and cozy game-inspired color pops — hover for details, click to explore.</p>
+    <header class="gallery-header">
+      <h1>All work</h1>
+      <!-- TEXT: short intro shown at the very top of the page -->
+      <p>A mix of character work for Twilight Bazaar, recent illustration for Girl Design, and smaller personal pieces — hover for details, click to explore.</p>
     </header>
 
-    <!-- ============ LANDING PAGE GALLERY (shown only for "All work") ============ -->
-    <!-- Each item here represents one project. Hover shows image + description in the tooltip.
-         Clicking opens that project's gallery — unless data-link is set, in which case it
-         opens the external link instead. -->
-    <div class="gallery" id="landingGallery">
-
-      <div class="gallery-item" data-view="category" data-cat="twilight-bazaar" data-label="Twilight Bazaar" data-tooltip="image" data-title="Twilight Bazaar" data-desc="Character design and Live2D animation for a night market social sim.">
-        <!-- IMAGE + TOOLTIP IMAGE: Twilight Bazaar landing cover -->
-        <div class="media" style="aspect-ratio: 4/3; background: linear-gradient(160deg, #C4613A, #F2D38A);">
-          <span class="media-label">Twilight Bazaar</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Twilight Bazaar</p>
-          <p class="caption-desc">Character design and Live2D animation for a night market social sim.</p>
-        </div>
-      </div>
-
-      <div class="gallery-item" data-view="category" data-cat="girl-design" data-label="Girl Design" data-tooltip="image" data-title="Girl Design" data-desc="Character illustration heading to Gamescom this year." data-link="#" data-link-text="View the Gamescom page ↗">
-        <!-- IMAGE + TOOLTIP IMAGE: Girl Design landing cover -->
-        <!-- LINK: replace data-link="#" with your real URL, and edit data-link-text above -->
-        <div class="media" style="aspect-ratio: 3/4; background: linear-gradient(160deg, #D85A30, #F0BFBF);">
-          <span class="media-label">Girl Design</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Girl Design</p>
-          <p class="caption-desc">Character illustration heading to Gamescom this year.</p>
-          <p class="caption-link">View the Gamescom page ↗</p>
-        </div>
-      </div>
-
-      <div class="gallery-item" data-view="category" data-cat="smaller-works" data-label="Smaller works" data-tooltip="image" data-title="Smaller works" data-desc="Studies, animation tests, and personal pieces.">
-        <!-- IMAGE + TOOLTIP IMAGE: Smaller works landing cover -->
-        <div class="media" style="aspect-ratio: 16/9; background: linear-gradient(160deg, #8FA88A, #F2D38A);">
-          <span class="media-label">Smaller works</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Smaller works</p>
-          <p class="caption-desc">Studies, animation tests, and personal pieces.</p>
-        </div>
-      </div>
-
+    <!-- ============ TWILIGHT BAZAAR SECTION ============ -->
+    <div class="section-divider">
+      <div class="divider-badge"><span class="divider-title">Twilight Bazaar</span></div>
+      <div class="divider-line"></div>
     </div>
 
-    <!-- ============ PROJECT GALLERY (shown for each project category) ============ -->
-    <!-- Tooltip here is text-only (no image preview), since the artwork is already visible
-         in the grid. Add data-link / data-link-text to any item to make it open an
-         external page on click, with a custom message in the tooltip. -->
-    <div class="gallery" id="gallery" style="display:none">
+    <section class="content-section" id="section-twilight-bazaar" data-cat="twilight-bazaar">
+      <!-- TEXT: short intro for this project -->
+      <p class="section-intro">Character design and Live2D animation for a night market social sim.</p>
 
-      <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="characters" data-title="Mira — Stall Keeper" data-desc="Lead NPC for the noodle stall, designed for a warm, approachable silhouette and a quick personality read.">
-        <!-- IMAGE + TOOLTIP TEXT: Mira — Stall Keeper -->
-        <div class="media" style="aspect-ratio: 3/4; background: linear-gradient(160deg, #C4613A, #E8956B);">
-          <span class="media-label">Mira — Stall Keeper</span>
+      <div class="gallery">
+
+        <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="characters" data-title="Mira — Stall Keeper" data-desc="Lead NPC for the noodle stall, designed for a warm, approachable silhouette and a quick personality read.">
+          <!-- IMAGE + TOOLTIP TEXT: Mira — Stall Keeper -->
+          <div class="media" style="aspect-ratio: 3/4; background: #FF9466;">
+            <span class="media-label">Mira — Stall Keeper</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Mira — Stall Keeper</p>
+            <p class="caption-desc">Lead NPC for the noodle stall, designed for a warm, approachable silhouette and a quick personality read.</p>
+          </div>
         </div>
-        <div class="caption">
-          <p class="caption-title">Mira — Stall Keeper</p>
-          <p class="caption-desc">Lead NPC for the noodle stall, designed for a warm, approachable silhouette and a quick personality read.</p>
+
+        <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="promo" data-title="Key art — Market at dusk" data-desc="Wide promotional illustration showing the market hub at golden hour." data-link="#" data-link-text="View on itch.io ↗">
+          <!-- IMAGE + TOOLTIP TEXT: Key art — Market at dusk -->
+          <!-- LINK: replace data-link="#" with your itch.io page, edit data-link-text above -->
+          <div class="media" style="aspect-ratio: 16/9; background: #C3B6F2;">
+            <span class="media-label">Key art — Market at dusk</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Key art — Market at dusk</p>
+            <p class="caption-desc">Wide promotional illustration showing the market hub at golden hour.</p>
+            <p class="caption-link">View on itch.io ↗</p>
+          </div>
         </div>
+
+        <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="characters" data-title="Player avatar — Base outfit" data-desc="Base customization outfit for the player character, built with modular layers for the wardrobe system.">
+          <!-- IMAGE + TOOLTIP TEXT: Player avatar — Base outfit -->
+          <div class="media" style="aspect-ratio: 2/3; background: #FFC785;">
+            <span class="media-label">Player avatar — Base outfit</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Player avatar — Base outfit</p>
+            <p class="caption-desc">Base customization outfit for the player character, built with modular layers for the wardrobe system.</p>
+          </div>
+        </div>
+
+        <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="expressions" data-title="Mira — Expression sheet" data-desc="Full expression set for Mira, built for Live2D parameter mapping and idle reactions.">
+          <!-- IMAGE + TOOLTIP TEXT: Mira — Expression sheet -->
+          <div class="media" style="aspect-ratio: 4/3; background: #FFD66B;">
+            <span class="media-label">Mira — Expression sheet</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Mira — Expression sheet</p>
+            <p class="caption-desc">Full expression set for Mira, built for Live2D parameter mapping and idle reactions.</p>
+          </div>
+        </div>
+
+        <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="characters" data-title="Tofu vendor NPC" data-desc="Background NPC design focused on quick silhouette variety for market crowd scenes.">
+          <!-- IMAGE + TOOLTIP TEXT: Tofu vendor NPC -->
+          <div class="media" style="aspect-ratio: 3/4; background: #B8DDA6;">
+            <span class="media-label">Tofu vendor NPC</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Tofu vendor NPC</p>
+            <p class="caption-desc">Background NPC design focused on quick silhouette variety for market crowd scenes.</p>
+          </div>
+        </div>
+
+        <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="promo" data-title="Festival poster concept" data-desc="In-world poster design for the lantern festival event, doubling as a piece of environmental storytelling.">
+          <!-- IMAGE + TOOLTIP TEXT: Festival poster concept -->
+          <div class="media" style="aspect-ratio: 2/3; background: #FFD66B;">
+            <span class="media-label">Festival poster concept</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Festival poster concept</p>
+            <p class="caption-desc">In-world poster design for the lantern festival event, doubling as a piece of environmental storytelling.</p>
+          </div>
+        </div>
+
+        <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="expressions" data-title="Vendor reaction set" data-desc="Reaction poses for background vendors, reused across multiple NPC bases to keep the market feeling lively.">
+          <!-- IMAGE + TOOLTIP TEXT: Vendor reaction set -->
+          <div class="media" style="aspect-ratio: 4/3; background: #8FD9B6;">
+            <span class="media-label">Vendor reaction set</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Vendor reaction set</p>
+            <p class="caption-desc">Reaction poses for background vendors, reused across multiple NPC bases to keep the market feeling lively.</p>
+          </div>
+        </div>
+
       </div>
+    </section>
 
-      <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="promo" data-title="Key art — Market at dusk" data-desc="Wide promotional illustration showing the market hub at golden hour." data-link="#" data-link-text="View on itch.io ↗">
-        <!-- IMAGE + TOOLTIP TEXT: Key art — Market at dusk -->
-        <!-- LINK: replace data-link="#" with your itch.io page, edit data-link-text above -->
-        <div class="media" style="aspect-ratio: 16/9; background: linear-gradient(160deg, #3B3A5C, #6A6792);">
-          <span class="media-label">Key art — Market at dusk</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Key art — Market at dusk</p>
-          <p class="caption-desc">Wide promotional illustration showing the market hub at golden hour.</p>
-          <p class="caption-link">View on itch.io ↗</p>
-        </div>
-      </div>
-
-      <div class="gallery-item" data-category="girl-design" data-subcategory="concept" data-title="Girl Design — Early sketches" data-desc="Early silhouette and pose exploration before settling on the final design direction.">
-        <!-- IMAGE + TOOLTIP TEXT: Girl Design — Early sketches -->
-        <div class="media" style="aspect-ratio: 4/3; background: linear-gradient(160deg, #D98C8C, #F0BFBF);">
-          <span class="media-label">Girl Design — Early sketches</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Girl Design — Early sketches</p>
-          <p class="caption-desc">Early silhouette and pose exploration before settling on the final design direction.</p>
-        </div>
-      </div>
-
-      <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="characters" data-title="Player avatar — Base outfit" data-desc="Base customization outfit for the player character, built with modular layers for the wardrobe system.">
-        <!-- IMAGE + TOOLTIP TEXT: Player avatar — Base outfit -->
-        <div class="media" style="aspect-ratio: 2/3; background: linear-gradient(160deg, #E8956B, #F2D38A);">
-          <span class="media-label">Player avatar — Base outfit</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Player avatar — Base outfit</p>
-          <p class="caption-desc">Base customization outfit for the player character, built with modular layers for the wardrobe system.</p>
-        </div>
-      </div>
-
-      <div class="gallery-item" data-category="smaller-works" data-subcategory="animation" data-title="Animation loop — Idle breathing" data-desc="Short looping animation test exploring subtle idle motion for a cute character base.">
-        <!-- IMAGE + TOOLTIP TEXT: Animation loop — Idle breathing -->
-        <div class="media" style="aspect-ratio: 9/16; background: linear-gradient(160deg, #8FA88A, #BFD4BA);">
-          <span class="media-label">Animation loop — Idle breathing</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Animation loop — Idle breathing</p>
-          <p class="caption-desc">Short looping animation test exploring subtle idle motion for a cute character base.</p>
-        </div>
-      </div>
-
-      <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="expressions" data-title="Mira — Expression sheet" data-desc="Full expression set for Mira, built for Live2D parameter mapping and idle reactions.">
-        <!-- IMAGE + TOOLTIP TEXT: Mira — Expression sheet -->
-        <div class="media" style="aspect-ratio: 4/3; background: linear-gradient(160deg, #C4613A, #F2D38A);">
-          <span class="media-label">Mira — Expression sheet</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Mira — Expression sheet</p>
-          <p class="caption-desc">Full expression set for Mira, built for Live2D parameter mapping and idle reactions.</p>
-        </div>
-      </div>
-
-      <div class="gallery-item" data-category="girl-design" data-subcategory="final" data-title="Girl Design — Final render" data-desc="Finished character render, prepared for the Gamescom showcase materials.">
-        <!-- IMAGE + TOOLTIP TEXT: Girl Design — Final render -->
-        <div class="media" style="aspect-ratio: 3/4; background: linear-gradient(160deg, #D85A30, #F0997B);">
-          <span class="media-label">Girl Design — Final render</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Girl Design — Final render</p>
-          <p class="caption-desc">Finished character render, prepared for the Gamescom showcase materials.</p>
-        </div>
-      </div>
-
-      <div class="gallery-item" data-category="smaller-works" data-subcategory="studies" data-title="Character study — Warm light" data-desc="Personal study focused on lighting and rendering under warm, low-key light.">
-        <!-- IMAGE + TOOLTIP TEXT: Character study — Warm light -->
-        <div class="media" style="aspect-ratio: 1/1; background: linear-gradient(160deg, #E8E2D6, #C4613A);">
-          <span class="media-label">Character study — Warm light</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Character study — Warm light</p>
-          <p class="caption-desc">Personal study focused on lighting and rendering under warm, low-key light.</p>
-        </div>
-      </div>
-
-      <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="characters" data-title="Tofu vendor NPC" data-desc="Background NPC design focused on quick silhouette variety for market crowd scenes.">
-        <!-- IMAGE + TOOLTIP TEXT: Tofu vendor NPC -->
-        <div class="media" style="aspect-ratio: 3/4; background: linear-gradient(160deg, #8FA88A, #E8956B);">
-          <span class="media-label">Tofu vendor NPC</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Tofu vendor NPC</p>
-          <p class="caption-desc">Background NPC design focused on quick silhouette variety for market crowd scenes.</p>
-        </div>
-      </div>
-
-      <div class="gallery-item" data-category="girl-design" data-subcategory="concept" data-title="Girl Design — Color exploration" data-desc="Palette tests exploring different moods for the same base design.">
-        <!-- IMAGE + TOOLTIP TEXT: Girl Design — Color exploration -->
-        <div class="media" style="aspect-ratio: 1/1; background: linear-gradient(160deg, #F0BFBF, #3B3A5C);">
-          <span class="media-label">Girl Design — Color exploration</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Girl Design — Color exploration</p>
-          <p class="caption-desc">Palette tests exploring different moods for the same base design.</p>
-        </div>
-      </div>
-
-      <div class="gallery-item" data-category="smaller-works" data-subcategory="animation" data-title="Sprite sheet — Walk cycle" data-desc="Eight-frame walk cycle sprite sheet built for a 2D side-scrolling prototype.">
-        <!-- IMAGE + TOOLTIP TEXT: Sprite sheet — Walk cycle -->
-        <div class="media" style="aspect-ratio: 16/9; background: linear-gradient(160deg, #6A6792, #BFD4BA);">
-          <span class="media-label">Sprite sheet — Walk cycle</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Sprite sheet — Walk cycle</p>
-          <p class="caption-desc">Eight-frame walk cycle sprite sheet built for a 2D side-scrolling prototype.</p>
-        </div>
-      </div>
-
-      <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="promo" data-title="Festival poster concept" data-desc="In-world poster design for the lantern festival event, doubling as a piece of environmental storytelling.">
-        <!-- IMAGE + TOOLTIP TEXT: Festival poster concept -->
-        <div class="media" style="aspect-ratio: 2/3; background: linear-gradient(160deg, #F2D38A, #C4613A);">
-          <span class="media-label">Festival poster concept</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Festival poster concept</p>
-          <p class="caption-desc">In-world poster design for the lantern festival event, doubling as a piece of environmental storytelling.</p>
-        </div>
-      </div>
-
-      <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="expressions" data-title="Vendor reaction set" data-desc="Reaction poses for background vendors, reused across multiple NPC bases to keep the market feeling lively.">
-        <!-- IMAGE + TOOLTIP TEXT: Vendor reaction set -->
-        <div class="media" style="aspect-ratio: 4/3; background: linear-gradient(160deg, #E8956B, #8FA88A);">
-          <span class="media-label">Vendor reaction set</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Vendor reaction set</p>
-          <p class="caption-desc">Reaction poses for background vendors, reused across multiple NPC bases to keep the market feeling lively.</p>
-        </div>
-      </div>
-
-      <div class="gallery-item" data-category="girl-design" data-subcategory="final" data-title="Girl Design — Turnaround" data-desc="Front, side, and back views used for the modeling and animation handoff.">
-        <!-- IMAGE + TOOLTIP TEXT: Girl Design — Turnaround -->
-        <div class="media" style="aspect-ratio: 16/9; background: linear-gradient(160deg, #3B3A5C, #D98C8C);">
-          <span class="media-label">Girl Design — Turnaround</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Girl Design — Turnaround</p>
-          <p class="caption-desc">Front, side, and back views used for the modeling and animation handoff.</p>
-        </div>
-      </div>
-
-      <div class="gallery-item" data-category="smaller-works" data-subcategory="studies" data-title="Fan art — Cozy café" data-desc="Personal piece exploring a cozy interior palette and soft character lighting.">
-        <!-- IMAGE + TOOLTIP TEXT: Fan art — Cozy café -->
-        <div class="media" style="aspect-ratio: 4/3; background: linear-gradient(160deg, #F2E0D8, #8FA88A);">
-          <span class="media-label">Fan art — Cozy café</span>
-        </div>
-        <div class="caption">
-          <p class="caption-title">Fan art — Cozy café</p>
-          <p class="caption-desc">Personal piece exploring a cozy interior palette and soft character lighting.</p>
-        </div>
-      </div>
-
+    <!-- ============ GIRL DESIGN SECTION ============ -->
+    <div class="section-divider">
+      <div class="divider-badge"><span class="divider-title">Girl Design</span></div>
+      <div class="divider-line"></div>
     </div>
 
-    <!-- ============ ABOUT PAGE (shown when "About" is selected) ============ -->
-    <section class="page-section" id="aboutSection" style="display:none">
+    <section class="content-section" id="section-girl-design" data-cat="girl-design">
+      <!-- TEXT: short intro for this project -->
+      <p class="section-intro">Character illustration heading to Gamescom this year.</p>
+
+      <div class="gallery">
+
+        <div class="gallery-item" data-category="girl-design" data-subcategory="concept" data-title="Girl Design — Early sketches" data-desc="Early silhouette and pose exploration before settling on the final design direction.">
+          <!-- IMAGE + TOOLTIP TEXT: Girl Design — Early sketches -->
+          <div class="media" style="aspect-ratio: 4/3; background: #FFA8C5;">
+            <span class="media-label">Girl Design — Early sketches</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Girl Design — Early sketches</p>
+            <p class="caption-desc">Early silhouette and pose exploration before settling on the final design direction.</p>
+          </div>
+        </div>
+
+        <div class="gallery-item" data-category="girl-design" data-subcategory="final" data-title="Girl Design — Final render" data-desc="Finished character render, prepared for the Gamescom showcase materials." data-link="#" data-link-text="View the Gamescom page ↗">
+          <!-- IMAGE + TOOLTIP TEXT: Girl Design — Final render -->
+          <!-- LINK: replace data-link="#" with your real URL, and edit data-link-text above -->
+          <div class="media" style="aspect-ratio: 3/4; background: #FF9466;">
+            <span class="media-label">Girl Design — Final render</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Girl Design — Final render</p>
+            <p class="caption-desc">Finished character render, prepared for the Gamescom showcase materials.</p>
+            <p class="caption-link">View the Gamescom page ↗</p>
+          </div>
+        </div>
+
+        <div class="gallery-item" data-category="girl-design" data-subcategory="concept" data-title="Girl Design — Color exploration" data-desc="Palette tests exploring different moods for the same base design.">
+          <!-- IMAGE + TOOLTIP TEXT: Girl Design — Color exploration -->
+          <div class="media" style="aspect-ratio: 1/1; background: #FFA8C5;">
+            <span class="media-label">Girl Design — Color exploration</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Girl Design — Color exploration</p>
+            <p class="caption-desc">Palette tests exploring different moods for the same base design.</p>
+          </div>
+        </div>
+
+        <div class="gallery-item" data-category="girl-design" data-subcategory="final" data-title="Girl Design — Turnaround" data-desc="Front, side, and back views used for the modeling and animation handoff.">
+          <!-- IMAGE + TOOLTIP TEXT: Girl Design — Turnaround -->
+          <div class="media" style="aspect-ratio: 16/9; background: #C3B6F2;">
+            <span class="media-label">Girl Design — Turnaround</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Girl Design — Turnaround</p>
+            <p class="caption-desc">Front, side, and back views used for the modeling and animation handoff.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============ SMALLER WORKS SECTION ============ -->
+    <div class="section-divider">
+      <div class="divider-badge"><span class="divider-title">Smaller works</span></div>
+      <div class="divider-line"></div>
+    </div>
+
+    <section class="content-section" id="section-smaller-works" data-cat="smaller-works">
+      <!-- TEXT: short intro for this project -->
+      <p class="section-intro">Studies, animation tests, and personal pieces.</p>
+
+      <div class="gallery">
+
+        <div class="gallery-item" data-category="smaller-works" data-subcategory="animation" data-title="Animation loop — Idle breathing" data-desc="Short looping animation test exploring subtle idle motion for a cute character base.">
+          <!-- IMAGE + TOOLTIP TEXT: Animation loop — Idle breathing -->
+          <div class="media" style="aspect-ratio: 9/16; background: #B8DDA6;">
+            <span class="media-label">Animation loop — Idle breathing</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Animation loop — Idle breathing</p>
+            <p class="caption-desc">Short looping animation test exploring subtle idle motion for a cute character base.</p>
+          </div>
+        </div>
+
+        <div class="gallery-item" data-category="smaller-works" data-subcategory="studies" data-title="Character study — Warm light" data-desc="Personal study focused on lighting and rendering under warm, low-key light.">
+          <!-- IMAGE + TOOLTIP TEXT: Character study — Warm light -->
+          <div class="media" style="aspect-ratio: 1/1; background: #FFC785;">
+            <span class="media-label">Character study — Warm light</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Character study — Warm light</p>
+            <p class="caption-desc">Personal study focused on lighting and rendering under warm, low-key light.</p>
+          </div>
+        </div>
+
+        <div class="gallery-item" data-category="smaller-works" data-subcategory="animation" data-title="Sprite sheet — Walk cycle" data-desc="Eight-frame walk cycle sprite sheet built for a 2D side-scrolling prototype.">
+          <!-- IMAGE + TOOLTIP TEXT: Sprite sheet — Walk cycle -->
+          <div class="media" style="aspect-ratio: 16/9; background: #7EC8E3;">
+            <span class="media-label">Sprite sheet — Walk cycle</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Sprite sheet — Walk cycle</p>
+            <p class="caption-desc">Eight-frame walk cycle sprite sheet built for a 2D side-scrolling prototype.</p>
+          </div>
+        </div>
+
+        <div class="gallery-item" data-category="smaller-works" data-subcategory="studies" data-title="Fan art — Cozy café" data-desc="Personal piece exploring a cozy interior palette and soft character lighting.">
+          <!-- IMAGE + TOOLTIP TEXT: Fan art — Cozy café -->
+          <div class="media" style="aspect-ratio: 4/3; background: #8FD9B6;">
+            <span class="media-label">Fan art — Cozy café</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Fan art — Cozy café</p>
+            <p class="caption-desc">Personal piece exploring a cozy interior palette and soft character lighting.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============ ABOUT SECTION ============ -->
+    <div class="section-divider">
+      <div class="divider-badge"><span class="divider-title">About</span></div>
+      <div class="divider-line"></div>
+    </div>
+
+    <section class="content-section" id="section-about">
       <div class="page-content">
         <div class="page-media">
           <!-- IMAGE: portrait photo or illustrated self-portrait -->
-          <div class="media" style="aspect-ratio: 4/5; background: linear-gradient(160deg, #CC8B1A, #F2E0D8);">
+          <div class="media" style="aspect-ratio: 4/5; background: #FFD66B;">
             <span class="media-label">About photo</span>
           </div>
         </div>
         <div class="page-text">
-          <h2>About</h2>
           <!-- TEXT: intro paragraph — who you are, what you do -->
           <p>A paragraph about who you are, your background, and what you specialize in. Mention your focus on cute character art, Live2D rigging and animation, and the kind of projects you enjoy working on.</p>
           <!-- TEXT: second paragraph — current focus, studio, what drives you -->
@@ -1024,11 +1057,15 @@
       </div>
     </section>
 
-    <!-- ============ CONTACT PAGE (shown when "Contact" is selected) ============ -->
-    <section class="page-section" id="contactSection" style="display:none">
+    <!-- ============ CONTACT SECTION ============ -->
+    <div class="section-divider">
+      <div class="divider-badge"><span class="divider-title">Contact</span></div>
+      <div class="divider-line"></div>
+    </div>
+
+    <section class="content-section" id="section-contact">
       <div class="page-content reverse">
         <div class="page-text">
-          <h2>Contact</h2>
           <!-- TEXT: contact intro -->
           <p>Whether you have a project in mind, a question about my work, or just want to say hello, I'd love to hear from you.</p>
           <div class="contact-detail">
@@ -1049,7 +1086,7 @@
         </div>
         <div class="page-media">
           <!-- IMAGE: illustration, sticker, or photo for the contact page -->
-          <div class="media" style="aspect-ratio: 1/1; background: linear-gradient(160deg, #F2D38A, #CC8B1A);">
+          <div class="media" style="aspect-ratio: 1/1; background: #FFC785;">
             <span class="media-label">Contact illustration</span>
           </div>
         </div>
@@ -1084,107 +1121,110 @@
 </div>
 
 <script>
-  const navButtons   = document.querySelectorAll('.nav-btn[data-view]');
+  /* ---- Daisy field generation ----
+     Builds the decorative flower background fresh on every page load,
+     sized against the page's actual scrollable height (not just one
+     viewport) so the flowers always cover the full length of the content,
+     however tall it ends up being. Re-runs on resize in case the layout
+     reflows (e.g. switching to the mobile sidebar). */
+  function generateDaisyField() {
+    const field = document.getElementById('daisyField');
+    if (!field) return;
+
+    const pageHeight = Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight
+    );
+
+    // Roughly one daisy per ~3000px of scroll height, clamped to a sane
+    // range so very short or very long pages still look intentional.
+    const perPixel = 1 / 3000;
+    const count = Math.min(60, Math.max(16, Math.round(pageHeight * perPixel)));
+
+    const petalColors = ['#FFFFFF'];
+    const centerColor = '#FFC233';
+
+    let svgMarkup = '';
+
+    for (let i = 0; i < count; i++) {
+      const size = Math.round(36 + Math.random() * 75);          // 36–111px
+      const left = (Math.random() * 100).toFixed(1);              // 0–100%
+      // Spread across the full document height, not just the viewport
+      const topPx = Math.round(Math.random() * pageHeight);
+      const rotate = Math.round(Math.random() * 360);
+      const opacity = (0.18 + Math.random() * 0.22).toFixed(2);   // 0.18–0.40
+      const petalCount = 4 + Math.floor(Math.random() * 4);        // 4–7 petals
+      const angleStep = 360 / petalCount;
+
+      let petals = '';
+      for (let p = 0; p < petalCount; p++) {
+        const angle = Math.round(angleStep * p);
+        const transform = p === 0 ? '' : ` transform="rotate(${angle} 60 60)"`;
+        petals += `<ellipse cx="60" cy="28" rx="16" ry="26" fill="${petalColors[0]}"${transform}/>`;
+      }
+
+      const style = `left:${left}%; top:${topPx}px; transform: translate(-50%,-50%) rotate(${rotate}deg); opacity:${opacity}; --base-rotate: ${rotate}deg;`;
+
+      svgMarkup += `<svg class="daisy" width="${size}" height="${size}" viewBox="0 0 120 120" style="${style}">${petals}<circle cx="60" cy="60" r="17" fill="${centerColor}"/></svg>`;
+    }
+
+    field.style.height = pageHeight + 'px';
+    field.innerHTML = svgMarkup;
+  }
+
+  generateDaisyField();
+  window.addEventListener('resize', () => {
+    clearTimeout(window._daisyResizeTimer);
+    window._daisyResizeTimer = setTimeout(generateDaisyField, 250);
+  });
+
+  const navButtons   = document.querySelectorAll('.nav-btn[data-target]');
   const galleryItems = document.querySelectorAll('.gallery-item');
-
-  const galleryHeader = document.getElementById('galleryHeader');
-  const galleryTitle  = document.getElementById('galleryTitle');
-  const galleryDesc   = document.getElementById('galleryDesc');
-
-  const landingGallery = document.getElementById('landingGallery');
-  const gallery        = document.getElementById('gallery');
-  const aboutSection   = document.getElementById('aboutSection');
-  const contactSection = document.getElementById('contactSection');
 
   const sidebar         = document.getElementById('sidebar');
   const menuToggle      = document.getElementById('menuToggle');
   const sidebarBackdrop = document.getElementById('sidebarBackdrop');
 
-  const ALL_WORK_TITLE = 'All work';
-  const ALL_WORK_DESC  = 'A mix of character work for Twilight Bazaar, recent illustration for Girl Design, and smaller personal pieces — hover for details, click to explore.';
+  /* ---- Click to scroll ----
+     Clicking a sidebar item smooth-scrolls to its section. */
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetSection = document.getElementById(btn.dataset.target);
+      if (!targetSection) return;
 
-  function applyFilter(cat, sub) {
-    gallery.querySelectorAll('.gallery-item').forEach(item => {
-      const matchCat = item.dataset.category === cat;
-      const matchSub = !sub || item.dataset.subcategory === sub;
-      item.style.display = (matchCat && matchSub) ? '' : 'none';
+      targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      sidebar.classList.remove('open');
+      sidebarBackdrop.classList.remove('open');
     });
-  }
-
-  function setActiveNav(view, cat, sub) {
-    const target = (view === 'category')
-      ? [...navButtons].find(b =>
-          b.dataset.view === 'category' &&
-          b.dataset.cat === cat &&
-          (b.dataset.sub || '') === (sub || '')
-        )
-      : [...navButtons].find(b => b.dataset.view === view);
-
-    const isParentCategory = view === 'category' && !sub;
-    const group = target ? target.closest('.nav-group') : null;
-    const wasOpen = !!group && group.classList.contains('open');
-
-    navButtons.forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.nav-group').forEach(g => g.classList.remove('open'));
-
-    if (target) {
-      target.classList.add('active');
-      if (group && !(isParentCategory && wasOpen)) {
-        group.classList.add('open');
-      }
-    }
-  }
-
-  function setView(el) {
-    const view  = el.dataset.view;
-    const cat   = el.dataset.cat;
-    const sub   = el.dataset.sub;
-    const label = el.dataset.label;
-
-    landingGallery.style.display = (view === 'all') ? '' : 'none';
-    gallery.style.display         = (view === 'category') ? '' : 'none';
-    aboutSection.style.display   = (view === 'about') ? '' : 'none';
-    contactSection.style.display = (view === 'contact') ? '' : 'none';
-    galleryHeader.style.display  = (view === 'about' || view === 'contact') ? 'none' : '';
-
-    if (view === 'category') {
-      applyFilter(cat, sub);
-      if (sub) {
-        const parentBtn = [...navButtons].find(b =>
-          b.dataset.view === 'category' && b.dataset.cat === cat && !b.dataset.sub
-        );
-        galleryTitle.textContent = (parentBtn ? parentBtn.dataset.label : cat) + ' — ' + label;
-      } else {
-        galleryTitle.textContent = label;
-      }
-      galleryDesc.textContent = '';
-    } else if (view === 'all') {
-      galleryTitle.textContent = ALL_WORK_TITLE;
-      galleryDesc.textContent  = ALL_WORK_DESC;
-    }
-
-    setActiveNav(view, cat, sub);
-
-    sidebar.classList.remove('open');
-    sidebarBackdrop.classList.remove('open');
-  }
-
-  /* ---- Click handling ----
-     If an item has data-link, it opens that URL in a new tab.
-     Otherwise, if it has data-view, it navigates within the page. */
-  function handleClick(el) {
-    if (el.dataset.link) {
-      window.open(el.dataset.link, '_blank', 'noopener');
-      return;
-    }
-    if (el.dataset.view) {
-      setView(el);
-    }
-  }
-
-  document.querySelectorAll('[data-view], .gallery-item[data-link]').forEach(el => {
-    el.addEventListener('click', () => handleClick(el));
   });
+
+  /* ---- Scroll-spy ----
+     Highlights the sidebar entry matching whichever section is currently
+     most in view, so the sidebar always reflects scroll position. */
+  const sections = document.querySelectorAll('.content-section');
+
+  const spyObserver = new IntersectionObserver((entries) => {
+    // Pick the section with the largest visible ratio among current intersections
+    let best = null;
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        if (!best || entry.intersectionRatio > best.intersectionRatio) best = entry;
+      }
+    });
+    if (!best) return;
+
+    const id = best.target.id;
+    navButtons.forEach(b => b.classList.remove('active'));
+    const match = [...navButtons].find(b => b.dataset.target === id);
+    if (match) match.classList.add('active');
+  }, {
+    root: null,
+    rootMargin: '-20% 0px -65% 0px',
+    threshold: [0, 0.25, 0.5, 0.75, 1]
+  });
+
+  sections.forEach(sec => spyObserver.observe(sec));
 
   /* ---- Cursor-following tooltip ---- */
   const tooltip      = document.getElementById('cursorTooltip');
@@ -1194,23 +1234,14 @@
   const tooltipLink  = document.getElementById('tooltipLink');
 
   galleryItems.forEach(item => {
-    const media = item.querySelector('.media');
-    const showImage = item.dataset.tooltip === 'image';
-
     item.addEventListener('mouseenter', () => {
       tooltipTitle.textContent = item.dataset.title || '';
       tooltipDesc.textContent  = item.dataset.desc || '';
-
-      if (showImage) {
-        tooltipMedia.style.display = 'block';
-        tooltipMedia.style.background = media.style.background;
-      } else {
-        tooltipMedia.style.display = 'none';
-      }
+      tooltipMedia.style.display = 'none';
 
       if (item.dataset.link) {
         tooltipLink.textContent = item.dataset.linkText || 'Click to view ↗';
-        tooltipLink.style.display = 'block';
+        tooltipLink.style.display = 'inline-block';
       } else {
         tooltipLink.style.display = 'none';
       }
@@ -1253,13 +1284,14 @@
   const lightboxPrev  = document.getElementById('lightboxPrev');
   const lightboxNext  = document.getElementById('lightboxNext');
 
+  // All linkable items across the whole page, in document order — the lightbox
+  // now cycles through everything as you scroll-navigate it, not just one section
   let lightboxItems = [];
   let lightboxIndex = -1;
 
-  // Only items currently visible in the project gallery, without an external link
   function getLightboxItems() {
-    return [...gallery.querySelectorAll('.gallery-item')]
-      .filter(item => item.style.display !== 'none' && !item.dataset.link);
+    return [...document.querySelectorAll('.content-section .gallery-item')]
+      .filter(item => !item.dataset.link);
   }
 
   function renderLightboxItem() {
@@ -1304,9 +1336,13 @@
     renderLightboxItem();
   }
 
-  // Project-page items WITHOUT a link open the lightbox instead of doing nothing
-  gallery.querySelectorAll('.gallery-item').forEach(item => {
-    if (!item.dataset.link) {
+  // Items WITHOUT a link open the lightbox; items WITH a link open externally
+  document.querySelectorAll('.content-section .gallery-item').forEach(item => {
+    if (item.dataset.link) {
+      item.addEventListener('click', () => {
+        window.open(item.dataset.link, '_blank', 'noopener');
+      });
+    } else {
       item.addEventListener('click', () => openLightbox(item));
     }
   });
