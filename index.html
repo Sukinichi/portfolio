@@ -34,15 +34,10 @@
     background-size: 22px 22px;
     color: var(--ink);
   }
-  body { font-size: 20px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  body { font-size: 20px; line-height: 1.6; -webkit-font-smoothing: antialiased; position: relative; }
 
-  /* DAISY BACKGROUND — generated fresh by JS on every page load (see generateDaisyField()
-     near the top of the <script> block) so the count and spread always
-     match the page's actual scrollable height. Absolute-positioned within
-     the page (not fixed), so it scrolls along with the rest of the content
-     instead of staying pinned to the viewport. Purely decorative, low
-     opacity. Each daisy gently sways in place via the sway/bob animation
-     below, so they feel alive as you scroll past. */
+  /* DAISY BACKGROUND — generated fresh by JS on every page load. Sits behind
+     all page content via z-index. Purely decorative. */
   .daisy-field {
     position: absolute;
     top: 0;
@@ -56,27 +51,7 @@
 
   .daisy-field svg {
     position: absolute;
-    transform-origin: 60px 60px;
-    animation: daisy-sway 6s ease-in-out infinite;
   }
-
-  /* A few alternating timing/delay variants so the daisies don't all
-     sway in unison — keeps the motion feeling organic rather than mechanical */
-  .daisy-field svg:nth-of-type(2n) { animation-duration: 7.5s; animation-delay: -1.2s; }
-  .daisy-field svg:nth-of-type(3n) { animation-duration: 5.2s; animation-delay: -2.6s; }
-  .daisy-field svg:nth-of-type(4n) { animation-duration: 8.4s; animation-delay: -0.6s; }
-  .daisy-field svg:nth-of-type(5n) { animation-duration: 6.7s; animation-delay: -3.4s; }
-
-  @keyframes daisy-sway {
-    0%, 100% { transform: translate(-50%, -50%) rotate(var(--base-rotate, 0deg)); }
-    50%      { transform: translate(-50%, calc(-50% - 6px)) rotate(calc(var(--base-rotate, 0deg) + 4deg)); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .daisy-field svg { animation: none; }
-  }
-
-  /* the animation isn't really that visible, maybe a bit too subtle. But if it doesn't affect load time then whatever ig */
 
   /* LAYOUT */
   .layout { display: flex; min-height: 100vh; position: relative; z-index: 1; }
@@ -263,7 +238,9 @@
     overflow-wrap: anywhere;
   }
 
-  /* GALLERY — adaptive masonry via columns (used for landing page AND project pages) */
+  /* GALLERY — pure CSS column-count masonry. Naturally adapts to any number
+     of items without any JS layout math — each item keeps its own aspect
+     ratio and columns are filled automatically, max 3 columns. */
   .gallery {
     column-count: 3;
     column-gap: 1.25rem;
@@ -271,6 +248,9 @@
 
   .gallery-item {
     break-inside: avoid;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
     margin-bottom: 1.25rem;
     cursor: pointer;
   }
@@ -463,6 +443,16 @@
     margin-bottom: 0.3rem;
   }
 
+  .cursor-tooltip .tooltip-label,
+  .lightbox-caption .lightbox-label {
+    font-size: 0.67rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 0.25rem;
+  }
+
   .cursor-tooltip .tooltip-desc {
     font-size: 0.8rem;
     font-weight: 400;
@@ -560,6 +550,7 @@
     font-weight: 400;
     color: var(--ink-muted);
     line-height: 1.7;
+    margin: 0;
   }
 
   .lightbox-close {
@@ -748,11 +739,13 @@
   - "TEXT:"     placeholder copy you should rewrite — titles,
                 descriptions, bio paragraphs, contact info.
 
-  - "TOOLTIP:"  the data-title / data-desc attributes on each
+  - "TOOLTIP:"  the data-title / data-tooltip-desc attributes on each
                 gallery item. These power BOTH the caption (mobile)
                 and the cursor tooltip (desktop) — edit once, updates both.
-                The tooltip is text-only everywhere now (no image preview),
-                since the artwork is always visible in the grid.
+                Use data-tooltip-desc for the short preview text shown in the
+                tooltip, and data-lightbox-desc for the longer paragraph used
+                in the lightbox. The tooltip is text-only everywhere now (no
+                image preview), since the artwork is always visible in the grid.
 
   - "LINK:"     optional. Add data-link="https://..." to make an item
                 open an external page when clicked, and data-link-text="..."
@@ -881,121 +874,146 @@
           data-desc="A short video compilation of my 2D animations"
           data-link="https://drive.google.com/file/d/1sWrHVZS4KduJQHucMOw-0z9OXWQxQ3G7/view"
           data-link-text="Click to watch the whole reel! ↗">
-          <!-- GIF preview + external Drive link -->
-          <!-- [ CATEGORY Game Art MEDIA 1 ] -->
-          <div class="media" style="aspect-ratio: 16/9; background: #000;">
+          <div class="media" background: #000;">
             <img src="media/Game%20Art/Media 1.gif" alt="Animation Reel preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
             <span class="media-label">Animation Reel</span>
           </div>
           <div class="caption">
             <p class="caption-title">Animation Reel</p>
-            <!-- [ MEDIA DESCRIPTION ] -->
             <p class="caption-desc">A short video compilation of my 2D animations</p>
             <p class="caption-link">Click to watch the whole reel! ↗</p>
           </div>
         </div>
 
-        <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="promo" data-title="Key art — Market at dusk" data-desc="Wide promotional illustration showing the market hub at golden hour." data-link="#" data-link-text="View on itch.io ↗">
-          <!-- IMAGE + TOOLTIP TEXT: Key art — Market at dusk -->
-          <!-- LINK: replace data-link="#" with your itch.io page, edit data-link-text above -->
-          <!-- [ CATEGORY Animation MEDIA 2 ] -->
-          <div class="media" style="aspect-ratio: 16/9; background: #C3B6F2;">
-            <span class="media-label">Key art — Market at dusk</span>
+        <div class="gallery-item"
+          data-category="game-art"
+          data-subcategory="TB"
+          data-title="Character Artist, 2D Animator"
+          data-desc="A game about trading and relationships in an eternal night market"
+          data-link="https://gorenggames.itch.io/twilight-bazaar"
+          data-link-text="Play the game on itch.io! ↗">
+          <div class="media" background: #000;">
+            <img src="media/Game%20Art/Media 2.png" alt="Game: Twilight Bazaar preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+            <span class="media-label">Game: Twilight Bazaar</span>
           </div>
           <div class="caption">
-            <p class="caption-title">Key art — Market at dusk</p>
+            <p class="caption-title">Test</p>
             <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">Wide promotional illustration showing the market hub at golden hour.</p>
-            <p class="caption-link">View on itch.io ↗</p>
+            <p class="caption-desc">Test</p>
+            <p class="caption-link">Test ↗</p>
           </div>
         </div>
 
-        <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="characters" data-title="Player avatar — Base outfit" data-desc="Base customization outfit for the player character, built with modular layers for the wardrobe system.">
-          <!-- IMAGE + TOOLTIP TEXT: Player avatar — Base outfit -->
-          <!-- [ CATEGORY Animation MEDIA 3 ] -->
-          <div class="media" style="aspect-ratio: 2/3; background: #FFC785;">
-            <span class="media-label">Player avatar — Base outfit</span>
+        <div class="gallery-item"
+          data-category="game-art"
+          data-subcategory="TB"
+          data-title="Designer, Rigger, & Animator"
+          data-tooltip-desc="I designed the system for Twilight Bazaar'scharacter customization, including the architecture for procedural generation and rigging for modular animation"
+          data-lightbox-desc="Twilight Bazaar uses a &lt;strong&gt;character customization&lt;/strong&gt; system for both the player and the NPCs in the game.
+          &lt;br&gt;
+          <br>
+          The whole system is built in the <strong>Live2D Cubism editor</strong>. I created an animation-ready PSD file with all the parts needed for personalization, then set up the model in Live2D for parameter-based procedural generation. 
+          <br><br>
+          Customization options include body type & shape, skin tone, hair style & colors, eye shapes, clothing, and accesories.
+         &lt;br&gt;<br>
+          The model is also rigged for animation that works with the character randomizer, so that <strong>all generated characters share the same seamless animations</strong>. I'm super proud of this one!"
+          >
+          <div class="media" background: #000;">
+            <img src="media/Game%20Art/media-3.gif" alt="Game: Twilight Bazaar preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+            <span class="media-label">Twilight Bazaar: Character Customization</span>
           </div>
           <div class="caption">
-            <p class="caption-title">Player avatar — Base outfit</p>
+            <p class="caption-title">Test</p>
             <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">Base customization outfit for the player character, built with modular layers for the wardrobe system.</p>
+            <p class="caption-desc">Test</p>
+            <p class="caption-link">Test ↗</p>
           </div>
         </div>
 
-        <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="expressions" data-title="Mira — Expression sheet" data-desc="Full expression set for Mira, built for Live2D parameter mapping and idle reactions.">
-          <!-- IMAGE + TOOLTIP TEXT: Mira — Expression sheet -->
-          <!-- [ CATEGORY Animation MEDIA 4 ] -->
-          <div class="media" style="aspect-ratio: 4/3; background: #FFD66B;">
-            <span class="media-label">Mira — Expression sheet</span>
+        <div class="gallery-item"
+          data-category="game-art"
+          data-subcategory="TB"
+          data-title="Rigger, Animator"
+          data-tooltip-desc="Animations for character expressions"
+          data-lightbox-desc="Twilight Bazaar's character design only features the eyes to convey emotions, so I had to figure out how to make the animations expressive with just wiggle movements and eye shapes.
+          <br><br>
+          With the cute art style and my knowledge of colors and typical cartoon expressions, I was able to create a set of animations that convey a wide range of emotions with the simplest details."
+          >
+          <div class="media" background: #000;">
+            <img src="media/Game%20Art/media-4.gif" alt="Game: Twilight Bazaar preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+            <span class="media-label">Twilight Bazaar: Character Animations</span>
           </div>
           <div class="caption">
-            <p class="caption-title">Mira — Expression sheet</p>
+            <p class="caption-title">Test</p>
             <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">Full expression set for Mira, built for Live2D parameter mapping and idle reactions.</p>
+            <p class="caption-desc">Test</p>
+            <p class="caption-link">Test ↗</p>
           </div>
         </div>
 
-        <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="characters" data-title="Tofu vendor NPC" data-desc="Background NPC design focused on quick silhouette variety for market crowd scenes.">
-          <!-- IMAGE + TOOLTIP TEXT: Tofu vendor NPC -->
-          <!-- [ CATEGORY Animation MEDIA 5 ] -->
-          <div class="media" style="aspect-ratio: 3/4; background: #B8DDA6;">
-            <span class="media-label">Tofu vendor NPC</span>
+        <div class="gallery-item"
+          data-category="game-art"
+          data-subcategory="TB"
+          data-title="Rigger, Animator"
+          data-tooltip-desc="Twilight Bazaar's characters share the same rig and animations regardless of customization"
+          data-lightbox-desc="Animations are rigged to work with the character customization system, so they all share the same animations regardless of the customization options!"
+          >
+          <div class="media" background: #000;">
+            <img src="media/Game%20Art/media-5.gif" alt="Game: Twilight Bazaar preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+            <span class="media-label">Twilight Bazaar: Modular Animations</span>
           </div>
           <div class="caption">
-            <p class="caption-title">Tofu vendor NPC</p>
+            <p class="caption-title">Test</p>
             <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">Background NPC design focused on quick silhouette variety for market crowd scenes.</p>
+            <p class="caption-desc">Test</p>
+            <p class="caption-link">Test ↗</p>
           </div>
         </div>
 
-        <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="promo" data-title="Festival poster concept" data-desc="In-world poster design for the lantern festival event, doubling as a piece of environmental storytelling.">
-          <!-- IMAGE + TOOLTIP TEXT: Festival poster concept -->
-          <!-- [ CATEGORY Animation MEDIA 6 ] -->
-          <div class="media" style="aspect-ratio: 2/3; background: #FFD66B;">
-            <span class="media-label">Festival poster concept</span>
+       <div class="gallery-item"
+          data-category="game-art"
+          data-subcategory="TB"
+          data-title="Character Artist"
+          data-tooltip-desc="Sketches for the conceptualization and design of the main character, Wira"
+          data-lightbox-desc="The description for Wira, Twilight Bazaar's main anchor character, was for him to be a <strong>sleazy, suspicious old man you cannot trust.</strong> <br><br> At the time of his conceptualization, the direction of the game was leaning towards a dark, poverty-stricken world and Wira was meant to be a character that would be a constant figure to the player. He picks the player up from somewhere in the bazaar and tasks them to work for him, and it needs to show in his design that he isn't a man you can trust."<br><br>
+          >
+          <div class="media" background: #000;">
+            <img src="media/Game%20Art/media 7.png" alt="Game: Twilight Bazaar preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+            <span class="media-label">Twilight Bazaar: Wira's Character Design</span>
           </div>
           <div class="caption">
-            <p class="caption-title">Festival poster concept</p>
+            <p class="caption-title">Test</p>
             <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">In-world poster design for the lantern festival event, doubling as a piece of environmental storytelling.</p>
+            <p class="caption-desc">Test</p>
+            <p class="caption-link">Test ↗</p>
           </div>
         </div>
 
-        <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="expressions" data-title="Vendor reaction set" data-desc="Reaction poses for background vendors, reused across multiple NPC bases to keep the market feeling lively.">
-          <!-- IMAGE + TOOLTIP TEXT: Vendor reaction set -->
-          <!-- [ CATEGORY Animation MEDIA 7 ] -->
-          <div class="media" style="aspect-ratio: 4/3; background: #8FD9B6;">
-            <span class="media-label">Vendor reaction set</span>
+        <!-- ══════════════════════════════════════════════════════════
+             ADD MORE ANIMATION MEDIA — copy the <div> block below,
+             paste it ABOVE this comment, then fill in your content.
+             Next label: [ CATEGORY Game Art MEDIA 4 ]
+        ══════════════════════════════════════════════════════════ -->
+        <template>
+        <div class="gallery-item"
+          data-category="game-art"
+          data-subcategory=""
+          data-title="Your piece title"
+          data-tooltip-desc="Short sentence shown in the hover tooltip."
+          data-lightbox-desc="Longer paragraph shown in the lightbox when clicked. Describe the piece, your process, tools used, and any relevant context.">
+          <!-- [ CATEGORY Game Art MEDIA 4 ] -->
+          <div class="media" style="aspect-ratio: 16/9; background: #FFD66B;">
+            <!-- IMAGE: replace the background above with background-image:url('your-file.jpg')
+                 and background-size:cover, or swap this whole div for an <img> tag -->
+            <span class="media-label">Your piece title</span>
           </div>
           <div class="caption">
-            <p class="caption-title">Vendor reaction set</p>
+            <p class="caption-title">Your piece title</p>
             <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">Reaction poses for background vendors, reused across multiple NPC bases to keep the market feeling lively.</p>
+            <p class="caption-desc">Short sentence shown in the hover tooltip.</p>
           </div>
         </div>
-        <!-- ============================================================
-             ADD MORE MEDIA HERE — copy the block below, paste it just
-             above this comment, then:
-             1. Update data-category / data-subcategory / data-title / data-desc
-             2. Replace [ CATEGORY Animation MEDIA 8 ] with the next number (8, then 9, etc.)
-             3. Swap the placeholder background color for a real image
-                (see IMAGE: notes elsewhere in this file)
-             4. Update the caption-title / caption-desc to match
-
-        <div class="gallery-item" data-category="twilight-bazaar" data-subcategory="" data-title="New piece title" data-desc="New piece description.">
-          [ CATEGORY Animation MEDIA 8 ]
-          <div class="media" style="aspect-ratio: 1/1; background: #FFD66B;">
-            <span class="media-label">New piece title</span>
-          </div>
-          <div class="caption">
-            <p class="caption-title">New piece title</p>
-            [ MEDIA DESCRIPTION ]
-            <p class="caption-desc">New piece description.</p>
-          </div>
-        </div>
-        ============================================================ -->
-
+        </template>
 
       </div>
     </section>
@@ -1016,81 +1034,51 @@
 
       <div class="gallery">
 
-        <div class="gallery-item" data-category="girl-design" data-subcategory="concept" data-title="Girl Design — Early sketches" data-desc="Early silhouette and pose exploration before settling on the final design direction.">
-          <!-- IMAGE + TOOLTIP TEXT: Girl Design — Early sketches -->
-          <!-- [ CATEGORY Illustration MEDIA 1 ] -->
+        <div class="gallery-item"
+          data-category="illustrations"
+          data-subcategory=""
+          data-title="Your piece title"
+          data-tooltip-desc="Short sentence shown in the hover tooltip."
+          data-lightbox-desc="Longer paragraph shown in the lightbox when clicked.">
+          <!-- [ CATEGORY Illustrations MEDIA 1 ] -->
           <div class="media" style="aspect-ratio: 4/3; background: #FFA8C5;">
-            <span class="media-label">Girl Design — Early sketches</span>
+            <!-- IMAGE: swap background for background-image:url(...) or drop an <img> here -->
+            <span class="media-label">Your piece title</span>
           </div>
           <div class="caption">
-            <p class="caption-title">Girl Design — Early sketches</p>
+            <p class="caption-title">Your piece title</p>
             <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">Early silhouette and pose exploration before settling on the final design direction.</p>
+            <p class="caption-desc">Short sentence shown in the hover tooltip.</p>
           </div>
         </div>
 
-        <div class="gallery-item" data-category="girl-design" data-subcategory="final" data-title="Girl Design — Final render" data-desc="Finished character render, prepared for the Gamescom showcase materials." data-link="#" data-link-text="View the Gamescom page ↗">
-          <!-- IMAGE + TOOLTIP TEXT: Girl Design — Final render -->
-          <!-- LINK: replace data-link="#" with your real URL, and edit data-link-text above -->
-          <!-- [ CATEGORY Illustration MEDIA 2 ] -->
-          <div class="media" style="aspect-ratio: 3/4; background: #FF9466;">
-            <span class="media-label">Girl Design — Final render</span>
+
+
+        <!-- ══════════════════════════════════════════════════════════
+             ADD MORE ILLUSTRATION MEDIA — copy the <div> block below,
+             paste it ABOVE this comment, then fill in your content.
+             Next label: [ CATEGORY Illustrations MEDIA 2 ]
+        ══════════════════════════════════════════════════════════ -->
+        <template>
+        <div class="gallery-item"
+          data-category="illustrations"
+          data-subcategory=""
+          data-title="Your piece title"
+          data-tooltip-desc="Short sentence shown in the hover tooltip."
+          data-lightbox-desc="Longer paragraph shown in the lightbox when clicked. Describe the piece, your process, tools used, and any relevant context.">
+          <!-- [ CATEGORY Illustrations MEDIA 2 ] -->
+          <div class="media" style="aspect-ratio: 4/3; background: #FFA8C5;">
+            <!-- IMAGE: replace the background above with background-image:url('your-file.jpg')
+                 and background-size:cover, or swap this whole div for an <img> tag -->
+            <span class="media-label">Your piece title</span>
           </div>
           <div class="caption">
-            <p class="caption-title">Girl Design — Final render</p>
+            <p class="caption-title">Your piece title</p>
             <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">Finished character render, prepared for the Gamescom showcase materials.</p>
-            <p class="caption-link">View the Gamescom page ↗</p>
+            <p class="caption-desc">Short sentence shown in the hover tooltip.</p>
           </div>
         </div>
-
-        <div class="gallery-item" data-category="girl-design" data-subcategory="concept" data-title="Girl Design — Color exploration" data-desc="Palette tests exploring different moods for the same base design.">
-          <!-- IMAGE + TOOLTIP TEXT: Girl Design — Color exploration -->
-          <!-- [ CATEGORY Illustration MEDIA 3 ] -->
-          <div class="media" style="aspect-ratio: 1/1; background: #FFA8C5;">
-            <span class="media-label">Girl Design — Color exploration</span>
-          </div>
-          <div class="caption">
-            <p class="caption-title">Girl Design — Color exploration</p>
-            <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">Palette tests exploring different moods for the same base design.</p>
-          </div>
-        </div>
-
-        <div class="gallery-item" data-category="girl-design" data-subcategory="final" data-title="Girl Design — Turnaround" data-desc="Front, side, and back views used for the modeling and animation handoff.">
-          <!-- IMAGE + TOOLTIP TEXT: Girl Design — Turnaround -->
-          <!-- [ CATEGORY Illustration MEDIA 4 ] -->
-          <div class="media" style="aspect-ratio: 16/9; background: #C3B6F2;">
-            <span class="media-label">Girl Design — Turnaround</span>
-          </div>
-          <div class="caption">
-            <p class="caption-title">Girl Design — Turnaround</p>
-            <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">Front, side, and back views used for the modeling and animation handoff.</p>
-          </div>
-        </div>
-        <!-- ============================================================
-             ADD MORE MEDIA HERE — copy the block below, paste it just
-             above this comment, then:
-             1. Update data-category / data-subcategory / data-title / data-desc
-             2. Replace [ CATEGORY Illustration MEDIA 5 ] with the next number (5, then 6, etc.)
-             3. Swap the placeholder background color for a real image
-                (see IMAGE: notes elsewhere in this file)
-             4. Update the caption-title / caption-desc to match
-
-        <div class="gallery-item" data-category="girl-design" data-subcategory="" data-title="New piece title" data-desc="New piece description.">
-          [ CATEGORY Illustration MEDIA 5 ]
-          <div class="media" style="aspect-ratio: 1/1; background: #FFD66B;">
-            <span class="media-label">New piece title</span>
-          </div>
-          <div class="caption">
-            <p class="caption-title">New piece title</p>
-            [ MEDIA DESCRIPTION ]
-            <p class="caption-desc">New piece description.</p>
-          </div>
-        </div>
-        ============================================================ -->
-
+        </template>
 
       </div>
     </section>
@@ -1113,40 +1101,51 @@
              Copy a .gallery-item block from another section as a template:
              swap the data-category to "design", give it a fresh data-subcategory,
              and edit the IMAGE / TOOLTIP comments inside it. -->
-        <div class="gallery-item" data-category="design" data-subcategory="placeholder" data-title="Add your design work here" data-desc="Replace this placeholder with your UI, branding, or visual design pieces.">
-          <!-- IMAGE + TOOLTIP TEXT: placeholder — swap for your first design piece -->
-          <!-- [ CATEGORY Design MEDIA 1 ] -->
+        <div class="gallery-item"
+          data-category="other-works"
+          data-subcategory=""
+          data-title="Your piece title"
+          data-tooltip-desc="Short sentence shown in the hover tooltip."
+          data-lightbox-desc="Longer paragraph shown in the lightbox when clicked.">
+          <!-- [ CATEGORY Other Works MEDIA 1 ] -->
           <div class="media" style="aspect-ratio: 4/3; background: #C3B6F2;">
-            <span class="media-label">Add your design work here</span>
+            <!-- IMAGE: swap background for background-image:url(...) or drop an <img> here -->
+            <span class="media-label">Your piece title</span>
           </div>
           <div class="caption">
-            <p class="caption-title">Add your design work here</p>
+            <p class="caption-title">Your piece title</p>
             <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">Replace this placeholder with your UI, branding, or visual design pieces.</p>
+            <p class="caption-desc">Short sentence shown in the hover tooltip.</p>
           </div>
         </div>
-        <!-- ============================================================
-             ADD MORE MEDIA HERE — copy the block below, paste it just
-             above this comment, then:
-             1. Update data-category / data-subcategory / data-title / data-desc
-             2. Replace [ CATEGORY Design MEDIA 2 ] with the next number (2, then 3, etc.)
-             3. Swap the placeholder background color for a real image
-                (see IMAGE: notes elsewhere in this file)
-             4. Update the caption-title / caption-desc to match
 
-        <div class="gallery-item" data-category="design" data-subcategory="" data-title="New piece title" data-desc="New piece description.">
-          [ CATEGORY Design MEDIA 2 ]
-          <div class="media" style="aspect-ratio: 1/1; background: #FFD66B;">
-            <span class="media-label">New piece title</span>
+
+
+        <!-- ══════════════════════════════════════════════════════════
+             ADD MORE OTHER WORKS MEDIA — copy the <div> block below,
+             paste it ABOVE this comment, then fill in your content.
+             Next label: [ CATEGORY Other Works MEDIA 2 ]
+        ══════════════════════════════════════════════════════════ -->
+        <template>
+        <div class="gallery-item"
+          data-category="other-works"
+          data-subcategory=""
+          data-title="Your piece title"
+          data-tooltip-desc="Short sentence shown in the hover tooltip."
+          data-lightbox-desc="Longer paragraph shown in the lightbox when clicked. Describe the piece, your process, tools used, and any relevant context.">
+          <!-- [ CATEGORY Other Works MEDIA 2 ] -->
+          <div class="media" style="aspect-ratio: 4/3; background: #C3B6F2;">
+            <!-- IMAGE: replace the background above with background-image:url('your-file.jpg')
+                 and background-size:cover, or swap this whole div for an <img> tag -->
+            <span class="media-label">Your piece title</span>
           </div>
           <div class="caption">
-            <p class="caption-title">New piece title</p>
-            [ MEDIA DESCRIPTION ]
-            <p class="caption-desc">New piece description.</p>
+            <p class="caption-title">Your piece title</p>
+            <!-- [ MEDIA DESCRIPTION ] -->
+            <p class="caption-desc">Short sentence shown in the hover tooltip.</p>
           </div>
         </div>
-        ============================================================ -->
-
+        </template>
 
       </div>
     </section>
@@ -1361,7 +1360,7 @@
   galleryItems.forEach(item => {
     item.addEventListener('mouseenter', () => {
       tooltipTitle.textContent = item.dataset.title || '';
-      tooltipDesc.textContent  = item.dataset.desc || '';
+      tooltipDesc.textContent  = item.dataset.tooltipDesc || item.dataset.desc || '';
       tooltipMedia.style.display = 'none';
 
       if (item.dataset.link) {
@@ -1430,7 +1429,7 @@
     lightboxMedia.innerHTML = media.innerHTML;
 
     lightboxTitle.textContent = item.dataset.title || '';
-    lightboxDesc.textContent  = item.dataset.desc || '';
+    lightboxDesc.innerHTML  = item.dataset.lightboxDesc || item.dataset.tooltipDesc || item.dataset.desc || '';
   }
 
   function openLightbox(item) {
