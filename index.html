@@ -241,50 +241,66 @@
   /* GALLERY — pure CSS column-count masonry. Naturally adapts to any number
      of items without any JS layout math — each item keeps its own aspect
      ratio and columns are filled automatically, max 3 columns. */
-  .gallery {
-    column-count: 3;
-    column-gap: 1.25rem;
-  }
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
 
-  .gallery-item {
-    break-inside: avoid;
-    display: flex;
-    flex-direction: column;
-    gap: 0.65rem;
-    margin-bottom: 1.25rem;
-    cursor: pointer;
-  }
+.gallery-item {
+  grid-column: span 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  cursor: pointer;
+}
 
   /* Shared base for every media block — thick outline + flat "pop" shadow */
-  .media {
-    position: relative;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border: 3px solid var(--outline);
-    border-radius: 1.25rem;
-    box-shadow: var(--pop);
-    background-color: var(--surface);
-  }
+.media {
+  position: relative;
+  width: 100%;
+  display: block;
+  overflow: hidden;
+  border: 3px solid var(--outline);
+  border-radius: 1.25rem;
+  box-shadow: var(--pop);
+  background-color: var(--surface);
+}
 
-  .media video {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-    background: #000;
-  }
+/* Images fill the container width and size naturally by their own ratio */
+.media img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
 
-  .gallery-item .media {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
+.media video {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #000;
+}
 
-  .gallery-item:hover .media {
-    transform: translateY(-4px);
-    box-shadow: var(--pop-hover);
-  }
+.gallery-item .media {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gallery-item:hover .media {
+  transform: translateY(-4px);
+  box-shadow: var(--pop-hover);
+}
+
+/* SIZE MODIFIERS — add class="gallery-item--large" or "gallery-item--feature"
+   to any .gallery-item to crop it to a taller fixed ratio in the gallery.
+   The full image is still shown uncropped in the lightbox when clicked. */
+
+.gallery-item--large {
+  grid-column: span 2;
+}
+.gallery-item--feature {
+  grid-column: span 3;
+}
 
   /* Sticker-style tag in the corner of each media block */
   .media-label {
@@ -512,10 +528,11 @@
     border: 3px solid var(--outline);
     border-radius: 1rem;
     max-width: 100%;
-    max-height: 100%;
+    max-height: calc(88vh - 3.5rem);
     min-width: 0;
     min-height: 0;
     flex-shrink: 1;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -523,6 +540,16 @@
     background-position: center;
     background-repeat: no-repeat;
     background-color: var(--bg);
+  }
+
+  .lightbox-media img,
+  .lightbox-media video {
+    max-width: 100%;
+    max-height: calc(88vh - 3.5rem);
+    width: auto;
+    height: auto;
+    display: block;
+    object-fit: contain;
   }
 
   .lightbox-media .media-label {
@@ -657,7 +684,8 @@
 
   /* RESPONSIVE */
   @media (max-width: 1100px) {
-    .gallery { column-count: 2; }
+    .gallery { grid-template-columns: repeat(4, 1fr); }
+    .gallery-item--feature { grid-column: span 2; }
   }
 
   @media (max-width: 760px) {
@@ -671,7 +699,8 @@
     .sidebar.open { transform: translateX(0); }
     .sidebar-backdrop.open { display: block; }
     .main { margin-left: 0; padding: 5rem 1.25rem 4rem; }
-    .gallery { column-count: 1; }
+    .gallery { grid-template-columns: repeat(2, 1fr); }
+    .gallery-item--feature { grid-column: span 2; }
     .page-content, .page-content.reverse { grid-template-columns: 1fr; }
     .page-content.reverse .page-text,
     .page-content.reverse .page-media { order: initial; }
@@ -867,15 +896,15 @@
 
       <div class="gallery">
 
-        <div class="gallery-item"
+        <div class="gallery-item gallery-item--feature"
           data-category="game-art"
           data-subcategory="reel"
           data-title="Animation Reel"
           data-desc="A short video compilation of my 2D animations"
           data-link="https://drive.google.com/file/d/1sWrHVZS4KduJQHucMOw-0z9OXWQxQ3G7/view"
           data-link-text="Click to watch the whole reel! ↗">
-          <div class="media" background: #000;">
-            <img src="media/Game%20Art/Media 1.gif" alt="Animation Reel preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+          <div class="media" style="background: #000;">
+            <img src="media/Game%20Art/Media 1.gif" alt="Animation Reel preview" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Animation Reel</span>
           </div>
           <div class="caption">
@@ -885,15 +914,15 @@
           </div>
         </div>
 
-        <div class="gallery-item"
+        <div class="gallery-item gallery-item--large"
           data-category="game-art"
           data-subcategory="TB"
           data-title="Character Artist, 2D Animator"
           data-desc="A game about trading and relationships in an eternal night market"
           data-link="https://gorenggames.itch.io/twilight-bazaar"
           data-link-text="Play the game on itch.io! ↗">
-          <div class="media" background: #000;">
-            <img src="media/Game%20Art/Media 2.png" alt="Game: Twilight Bazaar preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+          <div class="media" style="background: #000;">
+            <img src="media/Game%20Art/Media 2.png" alt="Game: Twilight Bazaar preview" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Game: Twilight Bazaar</span>
           </div>
           <div class="caption">
@@ -904,7 +933,8 @@
           </div>
         </div>
 
-        <div class="gallery-item"
+        
+        <div class="gallery-item gallery-item--large
           data-category="game-art"
           data-subcategory="TB"
           data-title="Designer, Rigger, & Animator"
@@ -918,30 +948,9 @@
          &lt;br&gt;<br>
           The model is also rigged for animation that works with the character randomizer, so that <strong>all generated characters share the same seamless animations</strong>. I'm super proud of this one!"
           >
-          <div class="media" background: #000;">
-            <img src="media/Game%20Art/media-3.gif" alt="Game: Twilight Bazaar preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+          <div class="media" style="  background: #000;">
+            <img src="media/Game%20Art/media-3.gif" alt="Game: Twilight Bazaar preview" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Twilight Bazaar: Character Customization</span>
-          </div>
-          <div class="caption">
-            <p class="caption-title">Test</p>
-            <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">Test</p>
-            <p class="caption-link">Test ↗</p>
-          </div>
-        </div>
-
-        <div class="gallery-item"
-          data-category="game-art"
-          data-subcategory="TB"
-          data-title="Rigger, Animator"
-          data-tooltip-desc="Animations for character expressions"
-          data-lightbox-desc="Twilight Bazaar's character design only features the eyes to convey emotions, so I had to figure out how to make the animations expressive with just wiggle movements and eye shapes.
-          <br><br>
-          With the cute art style and my knowledge of colors and typical cartoon expressions, I was able to create a set of animations that convey a wide range of emotions with the simplest details."
-          >
-          <div class="media" background: #000;">
-            <img src="media/Game%20Art/media-4.gif" alt="Game: Twilight Bazaar preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
-            <span class="media-label">Twilight Bazaar: Character Animations</span>
           </div>
           <div class="caption">
             <p class="caption-title">Test</p>
@@ -958,8 +967,8 @@
           data-tooltip-desc="Twilight Bazaar's characters share the same rig and animations regardless of customization"
           data-lightbox-desc="Animations are rigged to work with the character customization system, so they all share the same animations regardless of the customization options!"
           >
-          <div class="media" background: #000;">
-            <img src="media/Game%20Art/media-5.gif" alt="Game: Twilight Bazaar preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+          <div class="media" style="background: #000;">
+            <img src="media/Game%20Art/media-5.gif" alt="Game: Twilight Bazaar preview" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Twilight Bazaar: Modular Animations</span>
           </div>
           <div class="caption">
@@ -976,9 +985,9 @@
           data-title="Character Artist"
           data-tooltip-desc="Sketches for the conceptualization and design of the main character, Wira"
           data-lightbox-desc="The description for Wira, Twilight Bazaar's main anchor character, was for him to be a <strong>sleazy, suspicious old man you cannot trust.</strong> <br><br> At the time of his conceptualization, the direction of the game was leaning towards a dark, poverty-stricken world and Wira was meant to be a character that would be a constant figure to the player. He picks the player up from somewhere in the bazaar and tasks them to work for him, and it needs to show in his design that he isn't a man you can trust."<br><br>
-          >
-          <div class="media" background: #000;">
-            <img src="media/Game%20Art/media 7.png" alt="Game: Twilight Bazaar preview" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+          
+          <div class="media" style="background: #000;">
+            <img src="media/Game%20Art/media 7.png" alt="Game: Twilight Bazaar preview" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Twilight Bazaar: Wira's Character Design</span>
           </div>
           <div class="caption">
@@ -987,6 +996,45 @@
             <p class="caption-desc">Test</p>
             <p class="caption-link">Test ↗</p>
           </div>
+        </div>
+
+        <div class="gallery-item"
+          data-category="game-art"
+          data-subcategory="TB"
+          data-title="Character Artist"
+          data-tooltip-desc="Character art for Wira and the default PC"
+          data-lightbox-desc="For Twilight Bazaar's pubmats, we wanted to render the default player character (we nicknamed her the 'white lady' because the default settings for the character customization featured an all white base with straight hair and full bangs) and the MC, Wira, to fit the environment's sketchy painted aesthetic.<br><br> Despite the characters having a flatter art style, I made sure these renders matched the environment since this was going to be the key art for our promotional materials. <br><br> Hopefully this also shows my range and versatility as an artist! I can adapt to different art styles when needed."
+          >
+          <div class="media" style="background: #000;">
+            <img src="media/Game%20Art/media 6.png" alt="Game: Twilight Bazaar preview" style="width: 100%; height: auto; display: block;" />
+            <span class="media-label">Twilight Bazaar: Key Character Art</span>
+          </div>          
+        </div>
+
+        <div class="gallery-item"
+          data-category="game-art"
+          data-subcategory="TB"
+          data-title="Character Artist"
+          data-tooltip-desc="Ingredient icons for Twilight Bazaar's UI and inventory system"
+          data-lightbox-desc="For Twilight Bazaar's items, I made icons to match the game's art sketchy painted art style and translating real world ingredients into forms fitting for a fantasy-style world."
+          >
+          <div class="media" style="background: #000;">
+            <img src="media/Game%20Art/media 8.png" alt="Game: Twilight Bazaar preview" style="width: 100%; height: auto; display: block;" />
+            <span class="media-label">Twilight Bazaar: Ingredient Icons</span>
+          </div>          
+        </div>
+
+        <div class="gallery-item gallery-item--large"
+          data-category="game-art"
+          data-subcategory="TB"
+          data-title="Character Artist"
+          data-tooltip-desc="Progression of Twilight Bazaar's conceptualization from sketch to final art"
+          data-lightbox-desc="We started the conceptualization of Twilight bazaar with the idea that it was inspired by Asian night markets. So we wanted to create a world that featured the street stalls, lanterns, and the bustling energy and people during the night.<br><br> We also wanted the camera view to mimic a billboard style perspective like Cult of The Lamb, so I sketched a mockup concept of the beastlike and human characters in an environment similar to the street bazaars I knew from my home. <br><br> The final render is a collab between me and my teammate, who did the final painting and rendering of the environment while I did the characters, all derived from the initial concept sketches we made."
+          >
+          <div class="media" style="background: #000;">
+            <img src="media/Game%20Art/media 10.gif" alt="Game: Twilight Bazaar preview" style="width: 100%; height: auto; display: block;" />
+            <span class="media-label">Twilight Bazaar: Concept art progression</span>
+          </div>          
         </div>
 
         <!-- ══════════════════════════════════════════════════════════
