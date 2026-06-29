@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Work</title>
+<title>🌼 Janne's Portfolio  </title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
@@ -293,16 +293,6 @@
   box-shadow: var(--pop-hover);
 }
 
-  /* SIZE MODIFIERS
-     All items use aspect-ratio: 16/9 so column heights stay equal and
-     masonry distributes items in predictable round-robin order (item 0→col1,
-     1→col2, 2→col3, 3→col1, ...), giving clean horizontal subcategory bands.
-
-     --feature: the animation reel hero. Taller aspect ratio (4/3) so it
-                anchors col1 and draws the eye as the largest piece.
-     --large:   linked project covers. Slightly taller (5/4) for emphasis.
-     All others: uniform 16/9 — equal visual weight, equal gallery chance. */
-
   .gallery-item .media img,
   .gallery-item .media video {
     aspect-ratio: 16 / 9;
@@ -356,6 +346,80 @@
   .page-content.reverse { grid-template-columns: 1.3fr 1fr; }
   .page-content.reverse .page-text { order: 0; }
   .page-content.reverse .skills-grid { order: 1; }
+
+  .page-content.about-layout {
+    grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.25fr);
+    gap: 2.2rem 2.8rem;
+    align-items: start;
+  }
+
+  .about-left {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    align-items: flex-start;
+  }
+
+  .page-content.about-layout .page-media {
+    width: 100%;
+    max-width: 700px;
+  }
+
+  .page-content.about-layout .page-media .media {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: #FFD66B;
+    border: 3px solid var(--outline);
+    border-bottom-width: 5px;
+    border-radius: 1.3rem;
+    overflow: hidden;
+    box-shadow: var(--pop);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .page-content.about-layout .page-media img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+  }
+
+  .page-content.about-layout .skills-grid {
+    margin-top: 0;
+    max-width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+  }
+
+  .page-content.about-layout .page-text p {
+    max-width: 620px;
+  }
+
+  @media (max-width: 980px) {
+    .page-content.about-layout {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+
+    .page-content.about-layout .page-media {
+      max-width: 280px;
+    }
+
+    .page-content.about-layout .skills-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .page-content.about-layout .skills-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 
   .page-text h2 {
     font-family: var(--serif);
@@ -864,14 +928,14 @@
       <!-- TEXT: your name -->
       <a class="logo" href="#">Janne Nedamo</a>
       <!-- TEXT: short tagline -->
-      <p class="tagline">Character artist &amp; animator<br />Cute aesthetics · Live2D</p>
+      <p class="tagline">2D Artist &amp; Animator<br />Cute aesthetics · Rigged animation</p>
     </div>
 
     <nav class="sidebar-nav">
       <p class="sidebar-section-label">Works</p>
       <button class="nav-btn active" data-target="section-game-art" data-label="Game Art">Game Art</button>
-      <button class="nav-btn" data-target="section-illustrations" data-label="Illustrations">Illustrations</button>
-      <button class="nav-btn" data-target="section-other-works" data-label="Other Works">Other Works</button>
+<!--     <button class="nav-btn" data-target="section-illustrations" data-label="Illustrations">Illustrations</button>
+      <button class="nav-btn" data-target="section-other-works" data-label="Other Works">Other Works</button>--> 
 
       <p class="sidebar-section-label">Info</p>
       <button class="nav-btn" data-target="section-about" data-label="About me">About me</button>
@@ -905,8 +969,7 @@
       <!-- [ HEADER DESCRIPTION ] -->
       <h1>Welcome to my portfolio! ✨ </h1>
       <p>My name is <b>Janne Nedamo</b>, (aka <b>Sukinichi</b>) and I am a Filipino 2D artist and animator currently based in Finland! I specialize in art for games, particularly in the ✨ <strong>cute</strong> ✨ art style and ✨ <strong>cozy</strong> ✨ aesthetics. This website is a collection of my work throughout the years and a sneak peek into my creative process.</p>
-      <br>
-      <h2><p><b>Hover</b> over the images for info about each piece, and <b>click</b> on them to read about the piece in more detail!</p></h2>
+      
     </header>
 
     <!-- ============ GAME ART SECTION ============ -->
@@ -1266,18 +1329,18 @@
       </div>
     </section>
 
-    <!-- ============ ILLUSTRATIONS SECTION ============ -->
-    <div class="section-divider">
+    <!-- ============ ILLUSTRATIONS SECTION ============ 
+     <div class="section-divider">
       <div class="divider-badge"><span class="divider-title">Illustrations</span></div>
       <div class="divider-line"></div>
-    </div>
+    </div> -->
 
-    <!-- [ CATEGORY: Illustrations ] -->
-    <section class="content-section" id="section-illustrations" data-cat="illustrations">
+    <!-- [ CATEGORY: Illustrations ] 
+    <section class="content-section" id="section-illustrations" data-cat="illustrations"> -->
       <!-- TEXT: short intro for this category — project name now lives here
            since the divider above shows the category label (Illustrations)
            to match the sidebar -->
-      <!-- [ CATEGORY Illustrations DESCRIPTION ] -->
+      <!-- [ CATEGORY Illustrations DESCRIPTION ] 
       <p class="section-intro"><strong>Girl Design</strong> — character illustration heading to Gamescom this year.</p>
 
       <div class="gallery">
@@ -1287,18 +1350,18 @@
           data-subcategory=""
           data-title="Your piece title"
           data-tooltip-desc="Short sentence shown in the hover tooltip."
-          data-lightbox-desc="Longer paragraph shown in the lightbox when clicked.">
-          <!-- [ CATEGORY Illustrations MEDIA 1 ] -->
-          <div class="media" style="aspect-ratio: 4/3; background: #FFA8C5;">
-            <!-- IMAGE: swap background for background-image:url(...) or drop an <img> here -->
+          data-lightbox-desc="Longer paragraph shown in the lightbox when clicked.">    -->
+          <!-- [ CATEGORY Illustrations MEDIA 1 ] 
+          <div class="media" style="aspect-ratio: 4/3; background: #FFA8C5;">        -->
+            <!-- IMAGE: swap background for background-image:url(...) or drop an <img> here 
             <span class="media-label">Your piece title</span>
           </div>
           <div class="caption">
-            <p class="caption-title">Your piece title</p>
-            <!-- [ MEDIA DESCRIPTION ] -->
+            <p class="caption-title">Your piece title</p>        -->
+            <!-- [ MEDIA DESCRIPTION ] 
             <p class="caption-desc">Short sentence shown in the hover tooltip.</p>
           </div>
-        </div>
+        </div>        -->
 
 
 
@@ -1306,67 +1369,67 @@
              ADD MORE ILLUSTRATION MEDIA — copy the <div> block below,
              paste it ABOVE this comment, then fill in your content.
              Next label: [ CATEGORY Illustrations MEDIA 2 ]
-        ══════════════════════════════════════════════════════════ -->
+        ══════════════════════════════════════════════════════════ 
         <template>
         <div class="gallery-item"
           data-category="illustrations"
           data-subcategory=""
           data-title="Your piece title"
           data-tooltip-desc="Short sentence shown in the hover tooltip."
-          data-lightbox-desc="Longer paragraph shown in the lightbox when clicked. Describe the piece, your process, tools used, and any relevant context.">
-          <!-- [ CATEGORY Illustrations MEDIA 2 ] -->
-          <div class="media" style="aspect-ratio: 4/3; background: #FFA8C5;">
+          data-lightbox-desc="Longer paragraph shown in the lightbox when clicked. Describe the piece, your process, tools used, and any relevant context.">           -->
+          <!-- [ CATEGORY Illustrations MEDIA 2 ]
+          <div class="media" style="aspect-ratio: 4/3; background: #FFA8C5;">           -->
             <!-- IMAGE: replace the background above with background-image:url('your-file.jpg')
-                 and background-size:cover, or swap this whole div for an <img> tag -->
+                 and background-size:cover, or swap this whole div for an <img> tag
             <span class="media-label">Your piece title</span>
           </div>
           <div class="caption">
-            <p class="caption-title">Your piece title</p>
-            <!-- [ MEDIA DESCRIPTION ] -->
+            <p class="caption-title">Your piece title</p>           -->
+            <!-- [ MEDIA DESCRIPTION ]
             <p class="caption-desc">Short sentence shown in the hover tooltip.</p>
           </div>
         </div>
         </template>
 
       </div>
-    </section>
+    </section>           -->
 
-    <!-- ============ OTHER WORKS SECTION ============ -->
+    <!-- ============ OTHER WORKS SECTION ============ 
     <div class="section-divider">
       <div class="divider-badge"><span class="divider-title">Other Works</span></div>
       <div class="divider-line"></div>
-    </div>
+    </div>           -->
 
-    <!-- [ CATEGORY: Other Works ] -->
-    <section class="content-section" id="section-other-works" data-cat="other-works">
+    <!-- [ CATEGORY: Other Works ] 
+    <section class="content-section" id="section-other-works" data-cat="other-works">-->
       <!-- TEXT: short intro for this category — misc. projects, experiments, and personal pieces. -->
-      <!-- [ CATEGORY Other Works DESCRIPTION ] -->
+      <!-- [ CATEGORY Other Works DESCRIPTION ] 
       <p class="section-intro">Miscellaneous projects, experiments, and personal pieces.</p>
 
-      <div class="gallery">
+      <div class="gallery">-->
 
         <!-- This section is a placeholder, ready for your design pieces.
              Copy a .gallery-item block from another section as a template:
              swap the data-category to "design", give it a fresh data-subcategory,
              and edit the IMAGE / TOOLTIP comments inside it. -->
-        <div class="gallery-item"
+        <!--<div class="gallery-item"
           data-category="other-works"
           data-subcategory=""
           data-title="Your piece title"
           data-tooltip-desc="Short sentence shown in the hover tooltip."
           data-lightbox-desc="Longer paragraph shown in the lightbox when clicked.">
-          <!-- [ CATEGORY Other Works MEDIA 1 ] -->
+           [ CATEGORY Other Works MEDIA 1 ] 
           <div class="media" style="aspect-ratio: 4/3; background: #C3B6F2;">
-            <!-- IMAGE: swap background for background-image:url(...) or drop an <img> here -->
+             IMAGE: swap background for background-image:url(...) or drop an <img> here 
             <span class="media-label">Your piece title</span>
           </div>
           <div class="caption">
             <p class="caption-title">Your piece title</p>
-            <!-- [ MEDIA DESCRIPTION ] -->
+             [ MEDIA DESCRIPTION ] 
             <p class="caption-desc">Short sentence shown in the hover tooltip.</p>
           </div>
         </div>
-
+-->
 
 
         <!-- ══════════════════════════════════════════════════════════
@@ -1374,29 +1437,29 @@
              paste it ABOVE this comment, then fill in your content.
              Next label: [ CATEGORY Other Works MEDIA 2 ]
         ══════════════════════════════════════════════════════════ -->
-        <template>
+ <!--       <template>
         <div class="gallery-item"
           data-category="other-works"
           data-subcategory=""
           data-title="Your piece title"
           data-tooltip-desc="Short sentence shown in the hover tooltip."
           data-lightbox-desc="Longer paragraph shown in the lightbox when clicked. Describe the piece, your process, tools used, and any relevant context.">
-          <!-- [ CATEGORY Other Works MEDIA 2 ] -->
+           [ CATEGORY Other Works MEDIA 2 ] 
           <div class="media" style="aspect-ratio: 4/3; background: #C3B6F2;">
-            <!-- IMAGE: replace the background above with background-image:url('your-file.jpg')
-                 and background-size:cover, or swap this whole div for an <img> tag -->
+             IMAGE: replace the background above with background-image:url('your-file.jpg')
+                 and background-size:cover, or swap this whole div for an <img> tag 
             <span class="media-label">Your piece title</span>
           </div>
           <div class="caption">
             <p class="caption-title">Your piece title</p>
-            <!-- [ MEDIA DESCRIPTION ] -->
+             [ MEDIA DESCRIPTION ] 
             <p class="caption-desc">Short sentence shown in the hover tooltip.</p>
           </div>
         </div>
         </template>
 
       </div>
-    </section>
+    </section> -->
 
     <!-- ============ ABOUT ME SECTION ============ -->
     <div class="section-divider">
@@ -1405,17 +1468,29 @@
     </div>
 
     <section class="content-section" id="section-about">
-      <div class="page-content">
-        <div class="page-media">
-          <!-- IMAGE: portrait photo or illustrated self-portrait -->
-          <div class="media" style="aspect-ratio: 4/5; background: #FFD66B;">
-            <span class="media-label">About photo</span>
+      <div class="page-content about-layout">
+        <div class="about-left">
+          <div class="page-media">
+            <!-- IMAGE: portrait photo or illustrated self-portrait -->
+            <div class="media">
+              <img src="media/Janne.png" alt="Janne's portrait" />
+              <!-- <span class="media-label">About photo</span>  -->
+            </div>
+          </div>
+
+          <div class="skills-grid">
+            <div class="skill-chip"><strong>2D Animation</strong>Rigging &amp; animation</div>
+            <div class="skill-chip"><strong>Digital Illustration</strong>Especially cute art styles!</div>
+            <div class="skill-chip"><strong>Cute consultations</strong>Do you want it cuter?</div>
+            <div class="skill-chip"><strong>Unity Engine</strong>Tools &amp; integration</div>
+            <div class="skill-chip"><strong>Team Collaboration</strong>Both as a leader &amp; member</div>
+            <div class="skill-chip"><strong>Management</strong>Team coordination &amp; task delegation</div>
           </div>
         </div>
+
         <div class="page-text">
-          
           <p>I am <strong>Janne Denesse Nedamo</strong>, a 2D Artist specializing in cute art styles and 2D animation! I have a <strong>bachelor's degree</strong> in Game Development from iACADEMY (Philippines) and a joint <strong>master's degree</strong> in Game Design from Universidade Lusófona (Portugal), LUCA School of Arts (Belgium), and Aalto University (Finland)! I've been a part of the games industry for 13 years, with <strong>5 years of professional experience</strong> as Ranida Games's 2D Artist.</p>
-          
+
           <p>Outside games, I've been a freelancer since 2012 and have had 100+ clients over the years. I illustrate cute artwork, rig and animate VTuber models, and do just about anything related to cute stuff!! When I'm not dabbling on art and animation, I like to play friendslop games, bake and decorate cakes, do arts & crafts, and spend time with my bestie (my 20-inch squishmallow Miry).</p>
 
           <p><strong>To summarize:</strong>
@@ -1427,7 +1502,6 @@
             <br><br>     ✔️  Several award-winning games as game writer & animator
           </p>
           <!-- TEXT: skills/tools grid — edit labels and descriptions -->
-          
         </div>
       </div>
     </section>
@@ -1464,16 +1538,7 @@
           </div>
         </div>   -->
 
-        <div class="skills-grid">
-            <div class="skill-chip"><strong>Live2D Cubism</strong>Rigging &amp; animation</div>
-            <div class="skill-chip"><strong>Character design</strong>Cute &amp; stylized</div>
-            <div class="skill-chip"><strong>Illustration</strong>Concept to final</div>
-            <div class="skill-chip"><strong>Game writing</strong>Narrative design</div>
-            <div class="skill-chip"><strong>Illustration</strong>Concept to final</div>
-            <div class="skill-chip"><strong>Game writing</strong>Narrative design</div>
-          </div>
-
-      </div>
+        
     </section>
 
   </main>
