@@ -66,7 +66,7 @@
     display: flex;
     flex-direction: column;
     padding: 2.5rem 1.5rem 1.5rem;
-    overflow-y: auto;
+    overflow: hidden;
     z-index: 50;
     transition: transform 0.3s ease;
   }
@@ -137,35 +137,38 @@
   /* SIDEBAR SOCIALS */
   .sidebar-bottom {
     margin-top: auto;
-    padding-top: 1.5rem;
-    border-top: 3px solid var(--outline);
+    padding-top: 1rem;
     display: flex;
-    gap: 0.7rem;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 0.45rem;
+    align-items: stretch;
   }
 
   .social-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--surface);
-    border: 3px solid var(--outline);
-    border-bottom-width: 5px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    color: var(--ink);
+    gap: 0.65rem;
+    padding: 0.7rem 0.8rem;
+    border-radius: 0.9rem;
+    color: var(--ink-muted);
     text-decoration: none;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    transition: background 0.15s, transform 0.1s, border-bottom-width 0.1s;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.15s, color 0.15s, transform 0.1s;
+  }
+
+  .social-icon img {
+    width: 33px;
+    height: 33px;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
   }
 
   .social-icon:hover {
-    background: var(--accent);
-    transform: translateY(2px);
-    border-bottom-width: 3px;
+    background: var(--accent-light);
+    color: var(--ink);
+    transform: translateX(2px);
   }
 
   /* MOBILE MENU TOGGLE */
@@ -241,20 +244,19 @@
   /* GALLERY — pure CSS column-count masonry. Naturally adapts to any number
      of items without any JS layout math — each item keeps its own aspect
      ratio and columns are filled automatically, max 3 columns. */
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 1.25rem;
-  align-items: start;
-}
+  .gallery {
+    column-count: 3;
+    column-gap: 1.25rem;
+  }
 
-.gallery-item {
-  grid-column: span 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-  cursor: pointer;
-}
+  .gallery-item {
+    break-inside: avoid;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin-bottom: 1.25rem;
+    cursor: pointer;
+  }
 
   /* Shared base for every media block — thick outline + flat "pop" shadow */
 .media {
@@ -291,16 +293,34 @@
   box-shadow: var(--pop-hover);
 }
 
-/* SIZE MODIFIERS — add class="gallery-item--large" or "gallery-item--feature"
-   to any .gallery-item to crop it to a taller fixed ratio in the gallery.
-   The full image is still shown uncropped in the lightbox when clicked. */
+  /* SIZE MODIFIERS
+     All items use aspect-ratio: 16/9 so column heights stay equal and
+     masonry distributes items in predictable round-robin order (item 0→col1,
+     1→col2, 2→col3, 3→col1, ...), giving clean horizontal subcategory bands.
 
-.gallery-item--large {
-  grid-column: span 2;
-}
-.gallery-item--feature {
-  grid-column: span 3;
-}
+     --feature: the animation reel hero. Taller aspect ratio (4/3) so it
+                anchors col1 and draws the eye as the largest piece.
+     --large:   linked project covers. Slightly taller (5/4) for emphasis.
+     All others: uniform 16/9 — equal visual weight, equal gallery chance. */
+
+  .gallery-item .media img,
+  .gallery-item .media video {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    display: block;
+  }
+
+  .gallery-item--feature .media img,
+  .gallery-item--feature .media video {
+    aspect-ratio: 4 / 3;
+  }
+
+  .gallery-item--large .media img,
+  .gallery-item--large .media video {
+    aspect-ratio: 5 / 4;
+  }
 
   /* Sticker-style tag in the corner of each media block */
   .media-label {
@@ -334,8 +354,8 @@
   }
 
   .page-content.reverse { grid-template-columns: 1.3fr 1fr; }
-  .page-content.reverse .page-text { order: 1; }
-  .page-content.reverse .page-media { order: 2; }
+  .page-content.reverse .page-text { order: 0; }
+  .page-content.reverse .skills-grid { order: 1; }
 
   .page-text h2 {
     font-family: var(--serif);
@@ -363,6 +383,7 @@
     gap: 0.75rem;
     margin-top: 1.5rem;
     max-width: 480px;
+    width: 100%;
   }
 
   .skill-chip {
@@ -684,8 +705,7 @@
 
   /* RESPONSIVE */
   @media (max-width: 1100px) {
-    .gallery { grid-template-columns: repeat(4, 1fr); }
-    .gallery-item--feature { grid-column: span 2; }
+    .gallery { column-count: 2; }
   }
 
   @media (max-width: 760px) {
@@ -699,8 +719,7 @@
     .sidebar.open { transform: translateX(0); }
     .sidebar-backdrop.open { display: block; }
     .main { margin-left: 0; padding: 5rem 1.25rem 4rem; }
-    .gallery { grid-template-columns: repeat(2, 1fr); }
-    .gallery-item--feature { grid-column: span 2; }
+    .gallery { column-count: 1; }
     .page-content, .page-content.reverse { grid-template-columns: 1fr; }
     .page-content.reverse .page-text,
     .page-content.reverse .page-media { order: initial; }
@@ -861,12 +880,22 @@
 
 
     <div class="sidebar-bottom">
-      <!-- TEXT: link these to your real profiles -->
-      <a class="social-icon" href="#" title="Email">Mail</a>
-      <a class="social-icon" href="#" title="Instagram">IG</a>
-      <a class="social-icon" href="#" title="Bluesky">Sky</a>
-      <a class="social-icon" href="#" title="Artstation">AS</a>
-      <a class="social-icon" href="#" title="itch.io">itch</a>
+      <a class="social-icon" href="mailto:jdrnedamo@gmail.com" title="Email" aria-label="Email">
+        <img src="media/icon_mail.png" alt="" />
+        <span>Email</span>
+      </a>
+      <a class="social-icon" href="https://www.instagram.com/sukinichi/" title="Instagram" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+        <img src="media/icon_insta.png" alt="" />
+        <span>Instagram</span>
+      </a>
+      <a class="social-icon" href="https://sukinichi.itch.io/" title="itch.io" aria-label="itch.io" target="_blank" rel="noopener noreferrer">
+        <img src="media/icon_itch.png" alt="" />
+        <span>itch.io</span>
+      </a>
+      <a class="social-icon" href="https://www.linkedin.com/in/jdrnedamo/" title="LinkedIn" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+        <img src="media/icon_linkedin.png" alt="" />
+        <span>LinkedIn</span>
+      </a>
     </div>
   </aside>
 
@@ -914,28 +943,7 @@
           </div>
         </div>
 
-        <div class="gallery-item gallery-item--large"
-          data-category="game-art"
-          data-subcategory="TB"
-          data-title="Character Artist, 2D Animator"
-          data-desc="A game about trading and relationships in an eternal night market"
-          data-link="https://gorenggames.itch.io/twilight-bazaar"
-          data-link-text="Play the game on itch.io! ↗">
-          <div class="media" style="background: #000;">
-            <img src="media/Game%20Art/Media 2.png" alt="Game: Twilight Bazaar preview" style="width: 100%; height: auto; display: block;" />
-            <span class="media-label">Game: Twilight Bazaar</span>
-          </div>
-          <div class="caption">
-            <p class="caption-title">Test</p>
-            <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">Test</p>
-            <p class="caption-link">Test ↗</p>
-          </div>
-        </div>
-
-        
-        <div class="gallery-item gallery-item--large
-          data-category="game-art"
+        <div class="gallery-item gallery-item--large"game-art"
           data-subcategory="TB"
           data-title="Designer, Rigger, & Animator"
           data-tooltip-desc="I designed the system for Twilight Bazaar'scharacter customization, including the architecture for procedural generation and rigging for modular animation"
@@ -979,7 +987,7 @@
           </div>
         </div>
 
-       <div class="gallery-item"
+        <div class="gallery-item"
           data-category="game-art"
           data-subcategory="TB"
           data-title="Character Artist"
@@ -1024,7 +1032,7 @@
           </div>          
         </div>
 
-        <div class="gallery-item gallery-item--large"
+        <div class="gallery-item"
           data-category="game-art"
           data-subcategory="TB"
           data-title="Character Artist"
@@ -1037,9 +1045,28 @@
           </div>          
         </div>
 
+                <div class="gallery-item gallery-item--large"
+          data-category="game-art"
+          data-subcategory="TB"
+          data-title="Character Artist, 2D Animator"
+          data-desc="A game about trading and relationships in an eternal night market"
+          data-link="https://gorenggames.itch.io/twilight-bazaar"
+          data-link-text="Play the game on itch.io! ↗">
+          <div class="media" style="background: #000;">
+            <img src="media/Game%20Art/Media 2.png" alt="Game: Twilight Bazaar preview" style="width: 100%; height: auto; display: block;" />
+            <span class="media-label">Game: Twilight Bazaar</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Test</p>
+            <!-- [ MEDIA DESCRIPTION ] -->
+            <p class="caption-desc">Test</p>
+            <p class="caption-link">Test ↗</p>
+          </div>
+        </div>
+
         <div class="gallery-item gallery-item--large"
           data-category="game-art"
-          data-subcategory="reel"
+          data-subcategory="GD"
           data-title="Character Artist, Animator"
           data-desc="A game made by her, for her"
           data-link="https://galaxylina.itch.io/girl-design"
@@ -1055,7 +1082,7 @@
           </div>
         </div>
 
-        <div class="gallery-item "
+        <div class="gallery-item"
           data-category="game-art"
           data-subcategory="GD"
           data-title="Character Artist, Animator"
@@ -1068,7 +1095,7 @@
           </div>          
         </div>
 
-        <div class="gallery-item "
+        <div class="gallery-item"
           data-category="game-art"
           data-subcategory="GD"
           data-title="Character Artist, Animator"
@@ -1081,7 +1108,7 @@
           </div>          
         </div>
 
-        <div class="gallery-item "
+        <div class="gallery-item"
           data-category="game-art"
           data-subcategory="GD"
           data-title="Character Artist, Animator"
@@ -1094,7 +1121,7 @@
           </div>          
         </div>
 
-        <div class="gallery-item "
+        <div class="gallery-item"
           data-category="game-art"
           data-subcategory="GD"
           data-title="Character Artist, Animator"
@@ -1107,40 +1134,22 @@
           </div>          
         </div>
 
-        <div class="gallery-item gallery-item--large"
+        <div class="gallery-item"
           data-category="game-art"
-          data-subcategory="reel"
-          data-title="Writer"
-          data-desc="Award-winning narrative game about revisiting regrets and impostor syndrome"
-          data-link="https://jakabheindl.itch.io/memory-lane"
-          data-link-text="Play the game on itch.io! ↗">
-          <div class="media" style="background: #000;">
-            <img src="media/Game%20Art/media 16.png" alt="Memory Lane preview" style="width: 100%; height: auto; display: block;" />
-            <span class="media-label">Game: Memory Lane</span>
-          </div>
-          <div class="caption">
-            <p class="caption-title">Game: Memory Lane</p>
-            <p class="caption-desc">Award-winning narrativegame about revisiting regrets and impostor syndrome</p>
-            <p class="caption-link">Play the game on itch.io! ↗</p>
-          </div>
-        </div>
-
-        <div class="gallery-item "
-          data-category="game-art"
-          data-subcategory="ML"
-          data-title="Writer"
-          data-tooltip-desc="A short preview of Memory Lane's gameplay and art style"
-          data-lightbox-desc="Memory Lane is a narrative game that reuses the mechanics of the classic game Pipe Mania and redesigned to fit a narrative experience about overcoming impostor syndrome. <br><br> Lina, a regular office girl, is struggling with a decision to accept a promotion offered to her because she feels she doesn't deserve it. After a supernatural series of events that let her relive her memories and regrets, she revisits her past decisions and learns the other outcomes of her choices. <br><br> Memory Lane was made in 48 hours for the Lost Frequencies 2025 Game Jam hosted by Arcweave, being awarded 1st place for Best Narrative and 2nd place for Best Audio. It was exhibited at Florence Games Festival 2025 and featured in Arcweave's website!"
+          data-subcategory="HP"
+          data-title="Animator"
+          data-tooltip-desc="Rigging showcase for Hotpawt's character, Pawleen"
+          data-lightbox-desc="A preview showcase of the rig for Pawleen, one of the main characters for Hotpawt. The rig was made in Live2D Cubism Editor and designed for movement for the X and Y axes, as well as Z angles for head tilting. I knew that I wanted the animation to also feature her arms waving around in the air, so arms raising was rigged to accommodate that.<br><br> This piece is a collaboration with my teammate, who did the character design and prepared the layers for rigging. The rig took an estimate of 2 hours from import to completion, and the animations took 2 hours to complete."
           >
           <div class="media" style="background: #000;">
-            <img src="media/Game%20Art/media 17.gif" alt="Memory Lane: Gameplay Preview" style="width: 100%; height: auto; display: block;" />
-            <span class="media-label">Memory Lane: Gameplay Preview</span>
+            <img src="media/Game%20Art/media 20.gif" alt="Hotpawt: Pawleen Rigging Showcase" style="width: 100%; height: auto; display: block;" />
+            <span class="media-label">Hotpawt: Pawleen Rigging Showcase</span>
           </div>          
         </div>
 
-        <div class="gallery-item gallery-item--large"
+                        <div class="gallery-item gallery-item--large"
           data-category="game-art"
-          data-subcategory="reel"
+          data-subcategory="HP"
           data-title="Animator"
           data-desc="A game about dating and hotpots!"
           data-link="https://sukinichi.itch.io/hotpawt"
@@ -1156,7 +1165,7 @@
           </div>
         </div>
 
-        <div class="gallery-item "
+        <div class="gallery-item"
           data-category="game-art"
           data-subcategory="HP"
           data-title="Animator"
@@ -1169,7 +1178,7 @@
           </div>          
         </div>
 
-        <div class="gallery-item "
+        <div class="gallery-item"
           data-category="game-art"
           data-subcategory="HP"
           data-title="Animator"
@@ -1182,20 +1191,9 @@
           </div>          
         </div>
 
-        <div class="gallery-item "
-          data-category="game-art"
-          data-subcategory="HP"
-          data-title="Animator"
-          data-tooltip-desc="Rigging showcase for Hotpawt's character, Pawleen"
-          data-lightbox-desc="A preview showcase of the rig for Pawleen, one of the main characters for Hotpawt. The rig was made in Live2D Cubism Editor and designed for movement for the X and Y axes, as well as Z angles for head tilting. I knew that I wanted the animation to also feature her arms waving around in the air, so arms raising was rigged to accommodate that.<br><br> This piece is a collaboration with my teammate, who did the character design and prepared the layers for rigging. The rig took an estimate of 2 hours from import to completion, and the animations took 2 hours to complete."
-          >
-          <div class="media" style="background: #000;">
-            <img src="media/Game%20Art/media 20.gif" alt="Hotpawt: Pawleen Rigging Showcase" style="width: 100%; height: auto; display: block;" />
-            <span class="media-label">Hotpawt: Pawleen Rigging Showcase</span>
-          </div>          
-        </div>
+        
 
-        <div class="gallery-item "
+        <div class="gallery-item"
           data-category="game-art"
           data-subcategory="HP"
           data-title="Animator"
@@ -1208,8 +1206,39 @@
           </div>          
         </div>
 
-        <!-- ══════════════════════════════════════════════════════════
-             ADD MORE ANIMATION MEDIA — copy the <div> block below,
+        <div class="gallery-item gallery-item--large"
+          data-category="game-art"
+          data-subcategory="ML"
+          data-title="Writer"
+          data-desc="Award-winning narrative game about revisiting regrets and impostor syndrome"
+          data-link="https://jakabheindl.itch.io/memory-lane"
+          data-link-text="Play the game on itch.io! ↗">
+          <div class="media" style="background: #000;">
+            <img src="media/Game%20Art/media 16.png" alt="Memory Lane preview" style="width: 100%; height: auto; display: block;" />
+            <span class="media-label">Game: Memory Lane</span>
+          </div>
+          <div class="caption">
+            <p class="caption-title">Game: Memory Lane</p>
+            <p class="caption-desc">Award-winning narrativegame about revisiting regrets and impostor syndrome</p>
+            <p class="caption-link">Play the game on itch.io! ↗</p>
+          </div>
+        </div>
+
+        <div class="gallery-item gallery-item--large"
+          data-category="game-art"
+          data-subcategory="ML"
+          data-title="Writer"
+          data-tooltip-desc="A short preview of Memory Lane's gameplay and art style"
+          data-lightbox-desc="Memory Lane is a narrative game that reuses the mechanics of the classic game Pipe Mania and redesigned to fit a narrative experience about overcoming impostor syndrome. <br><br> Lina, a regular office girl, is struggling with a decision to accept a promotion offered to her because she feels she doesn't deserve it. After a supernatural series of events that let her relive her memories and regrets, she revisits her past decisions and learns the other outcomes of her choices. <br><br> Memory Lane was made in 48 hours for the Lost Frequencies 2025 Game Jam hosted by Arcweave, being awarded 1st place for Best Narrative and 2nd place for Best Audio. It was exhibited at Florence Games Festival 2025 and featured in Arcweave's website!"
+          >
+          <div class="media" style="background: #000;">
+            <img src="media/Game%20Art/media 17.gif" alt="Memory Lane: Gameplay Preview" style="width: 100%; height: auto; display: block;" />
+            <span class="media-label">Memory Lane: Gameplay Preview</span>
+          </div>          
+        </div>
+ <!-- ══════════════════════════════════════════════════════════
+
+        ADD MORE ANIMATION MEDIA — copy the <div> block below,
              paste it ABOVE this comment, then fill in your content.
              Next label: [ CATEGORY Game Art MEDIA 4 ]
         ══════════════════════════════════════════════════════════ -->
@@ -1384,17 +1413,21 @@
           </div>
         </div>
         <div class="page-text">
-          <!-- TEXT: intro paragraph — who you are, what you do -->
-          <p>A paragraph about who you are, your background, and what you specialize in. Mention your focus on cute character art, Live2D rigging and animation, and the kind of projects you enjoy working on.</p>
-          <!-- TEXT: second paragraph — current focus, studio, what drives you -->
-          <p>A second paragraph about what you're working on now, the studio you're part of, and what draws you to the work — the themes, moods, or stories you keep coming back to.</p>
+          
+          <p>I am <strong>Janne Denesse Nedamo</strong>, a 2D Artist specializing in cute art styles and 2D animation! I have a <strong>bachelor's degree</strong> in Game Development from iACADEMY (Philippines) and a joint <strong>master's degree</strong> in Game Design from Universidade Lusófona (Portugal), LUCA School of Arts (Belgium), and Aalto University (Finland)! I've been a part of the games industry for 13 years, with <strong>5 years of professional experience</strong> as Ranida Games's 2D Artist.</p>
+          
+          <p>Outside games, I've been a freelancer since 2012 and have had 100+ clients over the years. I illustrate cute artwork, rig and animate VTuber models, and do just about anything related to cute stuff!! When I'm not dabbling on art and animation, I like to play friendslop games, bake and decorate cakes, do arts & crafts, and spend time with my bestie (my 20-inch squishmallow Miry).</p>
+
+          <p><strong>To summarize:</strong>
+            <br>     ✔️  5 years of professional experience as a 2D Artist
+            <br><br>     ✔️  10+ years of freelance experience as an illustrator and animator
+            <br><br>     ✔️  Bachelor's degree in Game Development from iACADEMY (PH)
+            <br><br>     ✔️  Master's degree in Game Design from Universidade Lusófona (PT), LUCA School of Arts (BE), and Aalto University (FI)
+            <br><br>     ✔️  5+ released games, and 10+ game jams and prototypes on my itch.io
+            <br><br>     ✔️  Several award-winning games as game writer & animator
+          </p>
           <!-- TEXT: skills/tools grid — edit labels and descriptions -->
-          <div class="skills-grid">
-            <div class="skill-chip"><strong>Live2D Cubism</strong>Rigging &amp; animation</div>
-            <div class="skill-chip"><strong>Character design</strong>Cute &amp; stylized</div>
-            <div class="skill-chip"><strong>Illustration</strong>Concept to final</div>
-            <div class="skill-chip"><strong>Game writing</strong>Narrative design</div>
-          </div>
+          
         </div>
       </div>
     </section>
@@ -1408,30 +1441,38 @@
     <section class="content-section" id="section-contact">
       <div class="page-content reverse">
         <div class="page-text">
-          <!-- TEXT: contact intro -->
-          <p>Whether you have a project in mind, a question about my work, or just want to say hello, I'd love to hear from you.</p>
+          <p>Do you have a question or inquiry about my work? Would you like to collaborate with me? Did I somehow touch your soul and inspired you to get out of bed this morning? I would LOVE to know!! Send me a message, tell me about your day, and let me know how I can help!</p>
           <div class="contact-detail">
             <span class="contact-dot"></span>
-            <!-- TEXT: your email -->
-            <span>Email: <a href="mailto:you@example.com">you@example.com</a></span>
+            <span>Email: <a href="mailto:jdrnedamo@gmail.com">jdrnedamo@gmail.com</a></span>
           </div>
           <div class="contact-detail">
             <span class="contact-dot"></span>
-            <!-- TEXT: your location -->
-            <span>Based in <strong>Your City</strong></span>
+            <span>Based in <strong>Espoo, Finland</strong> (open to relocate!)</span>
           </div>
           <div class="contact-detail">
             <span class="contact-dot"></span>
             <!-- TEXT: availability note -->
-            <span>Available for freelance &amp; studio work</span>
+            <span>Or check my socials on the sidebar to reach me anywhere!</span>
           </div>
         </div>
-        <div class="page-media">
-          <!-- IMAGE: illustration, sticker, or photo for the contact page -->
+
+       <!-- <div class="page-media">
+           IMAGE: illustration, sticker, or photo for the contact page 
           <div class="media" style="aspect-ratio: 1/1; background: #FFC785;">
             <span class="media-label">Contact illustration</span>
           </div>
-        </div>
+        </div>   -->
+
+        <div class="skills-grid">
+            <div class="skill-chip"><strong>Live2D Cubism</strong>Rigging &amp; animation</div>
+            <div class="skill-chip"><strong>Character design</strong>Cute &amp; stylized</div>
+            <div class="skill-chip"><strong>Illustration</strong>Concept to final</div>
+            <div class="skill-chip"><strong>Game writing</strong>Narrative design</div>
+            <div class="skill-chip"><strong>Illustration</strong>Concept to final</div>
+            <div class="skill-chip"><strong>Game writing</strong>Narrative design</div>
+          </div>
+
       </div>
     </section>
 
