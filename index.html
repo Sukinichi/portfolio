@@ -165,7 +165,6 @@
     transform: translateX(2px);
   }
 
-  /* MOBILE MENU TOGGLE */
   .menu-toggle {
     display: none;
     position: fixed;
@@ -425,7 +424,6 @@
     max-width: 480px;
   }
 
-  /* Skills grid (About) */
   .skills-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -508,7 +506,6 @@
 
   .cursor-tooltip.visible { opacity: 1; }
 
-  /* Shown only for landing-page items (data-tooltip="image") */
   .cursor-tooltip .tooltip-media {
     width: 100%;
     height: 140px;
@@ -594,6 +591,7 @@
     border: 3px solid var(--outline);
     border-radius: 1rem;
     max-width: 100%;
+    height: calc(88vh - 3.5rem);
     max-height: calc(88vh - 3.5rem);
     min-width: 0;
     min-height: 0;
@@ -611,14 +609,13 @@
   .lightbox-media img,
   .lightbox-media video {
     max-width: 100%;
-    max-height: calc(88vh - 3.5rem);
+    max-height: 100%;
     width: auto;
     height: auto;
     display: block;
     object-fit: contain;
   }
 
-  /* Hide the sticker label when inside the lightbox — it's moved to the caption */
   .lightbox-media .media-label {
     display: none;
   }
@@ -638,14 +635,6 @@
     text-transform: uppercase;
     color: var(--ink-muted);
     margin-bottom: 0.35rem;
-  }
-
-  .lightbox-caption .lightbox-title {
-    flex-shrink: 0;
-    width: 220px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
   }
 
   .lightbox-caption .lightbox-title {
@@ -1616,8 +1605,6 @@
       document.documentElement.scrollHeight
     );
 
-    // Roughly one daisy per ~1800px of scroll height, clamped to a sane
-    // range so very short or very long pages still look intentional.
     const perPixel = 1 / 1800;
     const count = Math.min(90, Math.max(28, Math.round(pageHeight * perPixel)));
 
@@ -1627,14 +1614,14 @@
     let svgMarkup = '';
 
     for (let i = 0; i < count; i++) {
-      const size = Math.round(28 + Math.random() * 140);          // 28–168px
-      const left = (Math.random() * 100).toFixed(1);              // 0–100%
+      const size = Math.round(28 + Math.random() * 140);          
+      const left = (Math.random() * 100).toFixed(1);              
       // Spread across the full document height, not just the viewport
       const topPx = Math.round(Math.random() * pageHeight);
       const rotate = Math.round(Math.random() * 360);
-      const petalOpacity  = (0.6 + Math.random() * 0.15).toFixed(2);   // 0.60–0.75
-      const centerOpacity = (0.3 + Math.random() * 0.15).toFixed(2);   // 0.30–0.45
-      const petalCount = 4 + Math.floor(Math.random() * 4);        // 4–7 petals
+      const petalOpacity  = (0.6 + Math.random() * 0.15).toFixed(2);   
+      const centerOpacity = (0.3 + Math.random() * 0.15).toFixed(2);   
+      const petalCount = 4 + Math.floor(Math.random() * 4);        
       const angleStep = 360 / petalCount;
 
       let petals = '';
@@ -1778,7 +1765,6 @@
     lightboxMedia.style.backgroundColor = computed.backgroundColor;
     lightboxMedia.innerHTML = media.innerHTML;
 
-    // Extract the media-label text and put it in the caption above the title
     const labelEl = media.querySelector('.media-label');
     lightboxLabel.textContent = labelEl ? labelEl.textContent : '';
 
