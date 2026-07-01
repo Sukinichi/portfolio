@@ -36,14 +36,11 @@
   }
   body { font-size: 20px; line-height: 1.6; -webkit-font-smoothing: antialiased; position: relative; }
 
-  /* DAISY BACKGROUND — generated fresh by JS on every page load. Sits behind
-     all page content via z-index. Purely decorative. */
   .daisy-field {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    /* height is set inline by JS to match the page's full scrollable height */
     z-index: 0;
     pointer-events: none;
     overflow: hidden;
@@ -53,10 +50,8 @@
     position: absolute;
   }
 
-  /* LAYOUT */
   .layout { display: flex; min-height: 100vh; position: relative; z-index: 1; }
 
-  /* SIDEBAR */
   .sidebar {
     position: fixed;
     top: 0; left: 0; bottom: 0;
@@ -134,7 +129,6 @@
     border-color: var(--outline);
   }
 
-  /* SIDEBAR SOCIALS */
   .sidebar-bottom {
     margin-top: auto;
     padding-top: 1rem;
@@ -209,7 +203,6 @@
     z-index: 40;
   }
 
-  /* MAIN */
   .main {
     margin-left: 260px;
     flex: 1;
@@ -241,9 +234,6 @@
     overflow-wrap: anywhere;
   }
 
-  /* GALLERY — pure CSS column-count masonry. Naturally adapts to any number
-     of items without any JS layout math — each item keeps its own aspect
-     ratio and columns are filled automatically, max 3 columns. */
   .gallery {
     column-count: 3;
     column-gap: 1.25rem;
@@ -258,7 +248,6 @@
     cursor: pointer;
   }
 
-  /* Shared base for every media block — thick outline + flat "pop" shadow */
 .media {
   position: relative;
   width: 100%;
@@ -270,7 +259,6 @@
   background-color: var(--surface);
 }
 
-/* Images fill the container width and size naturally by their own ratio */
 .media img {
   width: 100%;
   height: auto;
@@ -312,7 +300,6 @@
     aspect-ratio: 5 / 4;
   }
 
-  /* Sticker-style tag in the corner of each media block */
   .media-label {
     position: absolute;
     left: 0.6rem;
@@ -332,10 +319,8 @@
     text-shadow: none;
   }
 
-  /* Caption — visible only on touch / non-hover devices */
   .gallery-item .caption { display: none; }
 
-  /* PAGE SECTIONS — About / Contact, shown in place of gallery */
   .page-content {
     display: grid;
     grid-template-columns: 1fr 1.3fr;
@@ -475,7 +460,6 @@
     margin-bottom: 0.15rem;
   }
 
-  /* Contact details */
   .contact-detail {
     display: flex;
     align-items: center;
@@ -505,7 +489,6 @@
     flex-shrink: 0;
   }
 
-  /* CURSOR TOOLTIP */
   .cursor-tooltip {
     position: fixed;
     top: 0; left: 0;
@@ -561,7 +544,6 @@
     line-height: 1.55;
   }
 
-  /* Custom message shown when an item has an external link */
   .cursor-tooltip .tooltip-link {
     display: none;
     margin-top: 0.6rem;
@@ -575,7 +557,6 @@
     color: var(--ink);
   }
 
-  /* LIGHTBOX — full-view popup for project-page media without an external link */
   .lightbox {
     position: fixed;
     inset: 0;
@@ -637,11 +618,29 @@
     object-fit: contain;
   }
 
+  /* Hide the sticker label when inside the lightbox — it's moved to the caption */
   .lightbox-media .media-label {
-    font-size: 1.05rem;
+    display: none;
   }
 
   .lightbox-caption {
+    flex-shrink: 0;
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .lightbox-caption .lightbox-label {
+    font-size: 0.67rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 0.35rem;
+  }
+
+  .lightbox-caption .lightbox-title {
     flex-shrink: 0;
     width: 220px;
     display: flex;
@@ -722,7 +721,6 @@
   .lightbox-arrow.prev { left: 1.5rem; }
   .lightbox-arrow.next { right: 1.5rem; }
 
-  /* SECTION DIVIDERS — mark the transition between continuous scroll sections */
   .section-divider {
     display: flex;
     align-items: center;
@@ -767,7 +765,6 @@
     overflow-wrap: anywhere;
   }
 
-  /* RESPONSIVE */
   @media (max-width: 1100px) {
     .gallery { column-count: 2; }
   }
@@ -838,82 +835,6 @@
 </head>
 <body>
 
-<!--
-  ============================================================
-  EDITING GUIDE — look for these comment tags throughout:
-
-  - "IMAGE:"    the line below sets a placeholder gradient.
-                Replace background: linear-gradient(...) with
-                background-image: url('your-file.jpg');
-                background-size: cover; background-position: center;
-                (or swap the whole div for an <img>)
-
-  - "TEXT:"     placeholder copy you should rewrite — titles,
-                descriptions, bio paragraphs, contact info.
-
-  - "TOOLTIP:"  the data-title / data-tooltip-desc attributes on each
-                gallery item. These power BOTH the caption (mobile)
-                and the cursor tooltip (desktop) — edit once, updates both.
-                Use data-tooltip-desc for the short preview text shown in the
-                tooltip, and data-lightbox-desc for the longer paragraph used
-                in the lightbox. The tooltip is text-only everywhere now (no
-                image preview), since the artwork is always visible in the grid.
-
-  - "LINK:"     optional. Add data-link="https://..." to make an item
-                open an external page when clicked, and data-link-text="..."
-                to customize the message shown in the tooltip/caption
-                (e.g. "View on itch.io ↗").
-
-  - "LIGHTBOX:" any gallery item WITHOUT data-link opens a full-view popup
-                when clicked — background blurs, the media scales to fit
-                the screen, and the title/description sit beside it. Move
-                between pieces with the on-screen arrows, the ← → keys, or
-                the scroll wheel — this cycles through every such item on
-                the page, in the order they appear top to bottom. Click
-                outside the image, press Esc, or use the × button to close.
-                Items WITH data-link skip this and open their external
-                link instead.
-
-  - "SCROLL NAV:" the whole page is one continuous scroll now. Sidebar
-                buttons smooth-scroll to their section (data-target
-                matches a section's id). As you scroll, whichever section
-                is currently in view gets highlighted automatically in the
-                sidebar — no clicking needed to update the active state.
-
-  ------------------------------------------------------------
-  CONTENT PLACEMENT LABELS — for pointing another agent (or yourself)
-  to exactly where content goes. These are plain bracket comments,
-  separate from the tags above, scattered throughout the body:
-
-  - "[ CATEGORY: X ]"             sits right above each project section
-                                   (Animation, Illustration, Design,
-                                   Smaller works). Marks where that whole
-                                   category's content block begins.
-
-  - "[ CATEGORY X DESCRIPTION ]"  sits above the <p class="section-intro">
-                                   for that category — the short blurb
-                                   shown under the section divider.
-
-  - "[ HEADER DESCRIPTION ]"      sits above the <h1>/<p> intro at the
-                                   very top of the page (inside
-                                   <header class="gallery-header">).
-
-  - "[ CATEGORY X MEDIA N ]"      sits above each individual <div class="media">
-                                   inside category X — numbered sequentially
-                                   per category (MEDIA 1, MEDIA 2, ...) so
-                                   it's unambiguous which image/video goes
-                                   where, even once placeholders are gone.
-
-  - "[ MEDIA DESCRIPTION ]"       sits above the <p class="caption-desc">
-                                   for that specific piece of media — the
-                                   blurb shown in the tooltip/caption.
-
-  Each category's gallery also ends with an "ADD MORE MEDIA HERE" comment
-  block containing a ready-to-copy template for the next item, pre-filled
-  with the correct next MEDIA number — so adding new work later is just
-  copy, paste above the comment, fill in the blanks.
-  ============================================================
--->
 
 
 <div class="daisy-field" id="daisyField" aria-hidden="true"></div>
@@ -925,9 +846,7 @@
 
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-top">
-      <!-- TEXT: your name -->
       <a class="logo" href="#">Janne Nedamo</a>
-      <!-- TEXT: short tagline -->
       <p class="tagline">2D Artist &amp; Animator<br />Cute aesthetics · Rigged animation</p>
     </div>
 
@@ -948,17 +867,17 @@
         <img src="media/icon_mail.png" alt="" />
         <span>Email</span>
       </a>
-      <a class="social-icon" href="https://www.instagram.com/sukinichi/" title="Instagram" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-        <img src="media/icon_insta.png" alt="" />
-        <span>Instagram</span>
-      </a>
       <a class="social-icon" href="https://sukinichi.itch.io/" title="itch.io" aria-label="itch.io" target="_blank" rel="noopener noreferrer">
         <img src="media/icon_itch.png" alt="" />
         <span>itch.io</span>
       </a>
-      <a class="social-icon" href="https://www.linkedin.com/in/jdrnedamo/" title="LinkedIn" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+            <a class="social-icon" href="https://www.linkedin.com/in/jdrnedamo/" title="LinkedIn" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
         <img src="media/icon_linkedin.png" alt="" />
         <span>LinkedIn</span>
+      </a>
+      <a class="social-icon" href="https://www.instagram.com/sukinichi/" title="Instagram" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+        <img src="media/icon_insta.png" alt="" />
+        <span>Instagram</span>
       </a>
     </div>
   </aside>
@@ -966,7 +885,7 @@
   <main class="main" id="mainScroll">
 
     <header class="gallery-header">
-      <!-- [ HEADER DESCRIPTION ] -->
+
       <h1>Welcome to my portfolio! ✨ </h1>
       <p>My name is <b>Janne Nedamo</b>, (aka <b>Sukinichi</b>) and I am a Filipino 2D artist and animator currently based in Finland! I specialize in art for games, particularly in the ✨ <strong>cute</strong> ✨ art style and ✨ <strong>cozy</strong> ✨ aesthetics. This website is a collection of my work throughout the years and a sneak peek into my creative process.</p>
       
@@ -978,12 +897,8 @@
       <div class="divider-line"></div>
     </div>
 
-    <!-- [ CATEGORY: Game Art ] -->
     <section class="content-section" id="section-game-art" data-cat="game-art">
-      <!-- TEXT: short intro for this category — project name now lives here
-           since the divider above shows the category label (Game Art) to
-           match the sidebar -->
-      <!-- [ CATEGORY Game Art DESCRIPTION ] -->
+
       <p class="section-intro">Here's a collection of my game projects and my contributions to each team! <br><br> Programs used include <strong>Live2D Cubism Editor, Procreate,</strong> and <strong>Spine</strong> for animations, <strong>Adobe Photoshop, Clip Studio Paint, and Procreate for</strong> for game art and illustration.</p>
 
       <div class="gallery">
@@ -1018,10 +933,10 @@
             <span class="media-label">Game: Twilight Bazaar</span>
           </div>
           <div class="caption">
-            <p class="caption-title">Test</p>
-            <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">Test</p>
-            <p class="caption-link">Test ↗</p>
+            <p class="caption-title">Game: Twilight Bazaar</p>
+
+            <p class="caption-desc">A game about trading and relationships in an eternal night market</p>
+            <p class="caption-link">Play the game on itch.io! ↗</p>
           </div>
         </div>
 
@@ -1043,10 +958,8 @@
             <span class="media-label">Twilight Bazaar: Character Customization</span>
           </div>
           <div class="caption">
-            <p class="caption-title">Test</p>
-            <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">Test</p>
-            <p class="caption-link">Test ↗</p>
+            <p class="caption-title">Twilight Bazaar: Character Customization</p>
+            <p class="caption-desc">A game about trading and relationships in an eternal night market</p>
           </div>
         </div>
 
@@ -1062,10 +975,8 @@
             <span class="media-label">Twilight Bazaar: Modular Animations</span>
           </div>
           <div class="caption">
-            <p class="caption-title">Test</p>
-            <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">Test</p>
-            <p class="caption-link">Test ↗</p>
+            <p class="caption-title">Twilight Bazaar: Modular Animations</p>
+            <p class="caption-desc">Twilight Bazaar's characters share the same rig and animations regardless of customization</p>
           </div>
         </div>
 
@@ -1081,10 +992,8 @@
             <span class="media-label">Twilight Bazaar: Wira's Character Design</span>
           </div>
           <div class="caption">
-            <p class="caption-title">Test</p>
-            <!-- [ MEDIA DESCRIPTION ] -->
-            <p class="caption-desc">Test</p>
-            <p class="caption-link">Test ↗</p>
+            <p class="caption-title">Twilight Bazaar: Wira's Character Design</p>
+            <p class="caption-desc">Conceptual sketches for Twilight Bazaar's main character, Wira</p>
           </div>
         </div>
 
@@ -1098,7 +1007,11 @@
           <div class="media" style="background: #000;">
             <img src="media/Game%20Art/media 6.png" alt="Game: Twilight Bazaar preview" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Twilight Bazaar: Key Character Art</span>
-          </div>          
+          </div>     
+          <div class="caption">
+            <p class="caption-title">Twilight Bazaar: Key Character Art</p>
+            <p class="caption-desc">Character art for Wira and the default PC</p>
+          </div>
         </div>
 
         <div class="gallery-item"
@@ -1111,7 +1024,28 @@
           <div class="media" style="background: #000;">
             <img src="media/Game%20Art/media 8.png" alt="Game: Twilight Bazaar preview" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Twilight Bazaar: Ingredient Icons</span>
-          </div>          
+          </div>  
+          <div class="caption">
+            <p class="caption-title">Twilight Bazaar: Ingredient Icons</p>
+            <p class="caption-desc">Icons for Twilight Bazaar's UI and inventory system</p>
+          </div>        
+        </div>
+
+        <div class="gallery-item"
+          data-category="game-art"
+          data-subcategory="TB"
+          data-title="Character Artist"
+          data-tooltip-desc="Progression of Twilight Bazaar's conceptualization from sketch to final art"
+          data-lightbox-desc="We started the conceptualization of Twilight bazaar with the idea that it was inspired by Asian night markets. So we wanted to create a world that featured the street stalls, lanterns, and the bustling energy and people during the night.<br><br> We also wanted the camera view to mimic a billboard style perspective like Cult of The Lamb, so I sketched a mockup concept of the beastlike and human characters in an environment similar to the street bazaars I knew from my home. <br><br> The final render is a collab between me and my teammate, who did the final painting and rendering of the environment while I did the characters, all derived from the initial concept sketches we made."
+          >
+          <div class="media" style="background: #000;">
+            <img src="media/Game%20Art/media 10.gif" alt="Game: Twilight Bazaar preview" style="width: 100%; height: auto; display: block;" />
+            <span class="media-label">Twilight Bazaar: Concept art progression</span>
+          </div>       
+          <div class="caption">
+            <p class="caption-title">Twilight Bazaar: Concept art progression</p>
+            <p class="caption-desc">Progression of Twilight Bazaar's conceptualization from sketch to final art</p>
+          </div>   
         </div>
 
         <div class="gallery-item gallery-item--large"
@@ -1134,23 +1068,6 @@
 
         <div class="gallery-item"
           data-category="game-art"
-          data-subcategory="TB"
-          data-title="Character Artist"
-          data-tooltip-desc="Progression of Twilight Bazaar's conceptualization from sketch to final art"
-          data-lightbox-desc="We started the conceptualization of Twilight bazaar with the idea that it was inspired by Asian night markets. So we wanted to create a world that featured the street stalls, lanterns, and the bustling energy and people during the night.<br><br> We also wanted the camera view to mimic a billboard style perspective like Cult of The Lamb, so I sketched a mockup concept of the beastlike and human characters in an environment similar to the street bazaars I knew from my home. <br><br> The final render is a collab between me and my teammate, who did the final painting and rendering of the environment while I did the characters, all derived from the initial concept sketches we made."
-          >
-          <div class="media" style="background: #000;">
-            <img src="media/Game%20Art/media 10.gif" alt="Game: Twilight Bazaar preview" style="width: 100%; height: auto; display: block;" />
-            <span class="media-label">Twilight Bazaar: Concept art progression</span>
-          </div>          
-        </div>
-
-                
-
-        
-
-        <div class="gallery-item"
-          data-category="game-art"
           data-subcategory="GD"
           data-title="Character Artist, Animator"
           data-tooltip-desc="A short demonstration of Girl Design's gameplay and art style"
@@ -1159,7 +1076,11 @@
           <div class="media" style="background: #000;">
             <img src="media/Game%20Art/media 11.gif" alt="Game: Girl Design preview" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Girl Design: Gameplay</span>
-          </div>          
+          </div>  
+          <div class="caption">
+            <p class="caption-title">Girl Design: Gameplay</p>
+            <p class="caption-desc">A short demonstration of Girl Design's gameplay and art style</p>
+          </div>         
         </div>
 
         <div class="gallery-item"
@@ -1172,6 +1093,10 @@
           <div class="media" style="background: #000;">
             <img src="media/Game%20Art/media 13.gif" alt="Girl Design: Animated cutscene" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Girl Design: Animated cutscene</span>
+          </div> 
+          <div class="caption">
+            <p class="caption-title">Girl Design: Animated cutscene</p>
+            <p class="caption-desc">A short demonstration of Girl Design's animated cutscene</p>
           </div>          
         </div>
 
@@ -1185,7 +1110,11 @@
           <div class="media" style="background: #000;">
             <img src="media/Game%20Art/media 14.png" alt="Girl Design: Cutscene storyboard" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Girl Design: Cutscene storyboard</span>
-          </div>          
+          </div>     
+          <div class="caption">
+            <p class="caption-title">Girl Design: Cutscene storyboard</p>
+            <p class="caption-desc">Storyboard for Girl Design's animated cutscene</p>
+          </div>      
         </div>
 
         <div class="gallery-item"
@@ -1198,7 +1127,11 @@
           <div class="media" style="background: #000;">
             <img src="media/Game%20Art/media 15.png" alt="Girl Design: Merchandise" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Girl Design: Merchandise</span>
-          </div>          
+          </div>   
+          <div class="caption">
+            <p class="caption-title">Girl Design: Merchandise</p>
+            <p class="caption-desc">Stickers, keychains, and other physical merchandise designed for Girl Design</p>
+          </div>        
         </div>
 
         <div class="gallery-item"
@@ -1211,7 +1144,11 @@
           <div class="media" style="background: #000;">
             <img src="media/Game%20Art/media 23.png" alt="Rooster Wars: Natural Habitat" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Rooster Wars: Natural Habitat</span>
-          </div>          
+          </div>   
+          <div class="caption">
+            <p class="caption-title">Rooster Wars: Natural Habitat</p>
+            <p class="caption-desc">A still frame of Rooster Wars's animated trailer featuring the Mannochs in their natural habitat</p>
+          </div>        
         </div>
 
         <div class="gallery-item"
@@ -1224,12 +1161,31 @@
           <div class="media" style="background: #000;">
             <img src="media/Game%20Art/media 24.png" alt="Rooster Wars: Chicken breeds" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Rooster Wars: Chicken breeds</span>
-          </div>          
+          </div>   
+          <div class="caption">
+            <p class="caption-title">Rooster Wars: Chicken breeds</p>
+            <p class="caption-desc">A still frame of Rooster Wars's animated trailer featuring different Mannoch breeds</p>
+          </div>         
         </div>
 
-        
+        <div class="gallery-item"
+          data-category="game-art"
+          data-subcategory="RW"
+          data-title="Lead Artist"
+          data-tooltip-desc="A still frame of Rooster Wars's animated trailer featuring the city built around the comet"
+          data-lightbox-desc="This was a tough one! I had to design a city around the functions of the comet and take the lore into account. Each circle around the comet had its own function, and the lore was that the Mannochs built civilization around the gems they harvest from the comet. <br><br> Rooster Wars was the very first game where I had experience as an art lead and I was able to direct the visual aesthetic of the game from the ground up. I was the one who designed the look of the Mannochs and the environment's look and feel. <br><br> The art style is cute and stylized, and I tried to emphasize the roundness to evoke a feeling of friendliness (considering that the game was inspired by the real life culture of cock fighting, which I heavily opposed). Despite the gameplay still essentially being cockfighting, I did my best to make the visual aesthetic approachable and easy to digest."
+          >
+          <div class="media" style="background: #000;">
+            <img src="media/Game%20Art/media 25.png" alt="Rooster Wars: Comet city" style="width: 100%; height: auto; display: block;" />
+            <span class="media-label">Rooster Wars: Comet city</span>
+          </div>  
+          <div class="caption">
+            <p class="caption-title">Rooster Wars: Comet city</p>
+            <p class="caption-desc">A still frame of Rooster Wars's animated trailer featuring the city built around the comet</p>
+          </div>           
+        </div>
 
-                        <div class="gallery-item gallery-item--large"
+        <div class="gallery-item gallery-item--large"
           data-category="game-art"
           data-subcategory="HP"
           data-title="Animator"
@@ -1257,6 +1213,10 @@
           <div class="media" style="background: #000;">
             <img src="media/Game%20Art/media 18.gif" alt="Hotpawt: Bubbles Rigging Showcase" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Hotpawt: Bubbles Rigging Showcase</span>
+          </div>  
+          <div class="caption">
+            <p class="caption-title">Hotpawt: Bubbles Rigging Showcase</p>
+            <p class="caption-desc">Rigging showcase for Hotpawt's character, Bubbles</p>
           </div>          
         </div>
 
@@ -1270,7 +1230,11 @@
           <div class="media" style="background: #000;">
             <img src="media/Game%20Art/media 19.gif" alt="Hotpawt: Bubbles Animation Showcase" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Hotpawt: Bubbles Animation Showcase</span>
-          </div>          
+          </div> 
+          <div class="caption">
+            <p class="caption-title">Hotpawt: Bubbles Animation Showcase</p>
+            <p class="caption-desc">Animation showcase for Hotpawt's character, Bubbles</p>
+          </div>           
         </div>
 
         <div class="gallery-item"
@@ -1283,7 +1247,10 @@
           <div class="media" style="background: #000;">
             <img src="media/Game%20Art/media 20.gif" alt="Hotpawt: Pawleen Rigging Showcase" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Hotpawt: Pawleen Rigging Showcase</span>
-          </div>          
+          </div> 
+          <div class="caption">
+            <p class="caption-title">Hotpawt: Pawleen Rigging Showcase</p>
+            <p class="caption-desc">Rigging showcase for Hotpawt's character, Pawleen</p>         
         </div>
 
         <div class="gallery-item"
@@ -1296,6 +1263,10 @@
           <div class="media" style="background: #000;">
             <img src="media/Game%20Art/media 21.gif" alt="Hotpawt: Pawleen Animation Showcase" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Hotpawt: Pawleen Animation Showcase</span>
+          </div>  
+          <div class="caption">
+            <p class="caption-title">Hotpawt: Pawleen Animation Showcase</p>
+            <p class="caption-desc">Animation showcase for Hotpawt's character, Pawleen</p>
           </div>          
         </div>
 
@@ -1327,23 +1298,11 @@
           <div class="media" style="background: #000;">
             <img src="media/Game%20Art/media 17.gif" alt="Memory Lane: Gameplay Preview" style="width: 100%; height: auto; display: block;" />
             <span class="media-label">Memory Lane: Gameplay Preview</span>
-          </div>          
-        </div>
-
-        
-
-        <div class="gallery-item"
-          data-category="game-art"
-          data-subcategory="RW"
-          data-title="Lead Artist"
-          data-tooltip-desc="A still frame of Rooster Wars's animated trailer featuring the city built around the comet"
-          data-lightbox-desc="This was a tough one! I had to design a city around the functions of the comet and take the lore into account. Each circle around the comet had its own function, and the lore was that the Mannochs built civilization around the gems they harvest from the comet. <br><br> Rooster Wars was the very first game where I had experience as an art lead and I was able to direct the visual aesthetic of the game from the ground up. I was the one who designed the look of the Mannochs and the environment's look and feel. <br><br> The art style is cute and stylized, and I tried to emphasize the roundness to evoke a feeling of friendliness (considering that the game was inspired by the real life culture of cock fighting, which I heavily opposed). Despite the gameplay still essentially being cockfighting, I did my best to make the visual aesthetic approachable and easy to digest."
-          >
-          <div class="media" style="background: #000;">
-            <img src="media/Game%20Art/media 25.png" alt="Rooster Wars: Comet city" style="width: 100%; height: auto; display: block;" />
-            <span class="media-label">Rooster Wars: Comet city</span>
-          </div>          
-        </div>
+          </div> 
+          <div class="caption">
+            <p class="caption-title">Memory Lane: Gameplay Preview</p>
+            <p class="caption-desc">A short preview of Memory Lane's gameplay and art style</p>         
+          </div>
 
       </div>
     </section>
@@ -1353,7 +1312,6 @@
       <div class="divider-badge"><span class="divider-title">Illustrations</span></div>
       <div class="divider-line"></div>
     </div> 
-
 
     <section class="content-section" id="section-illustrations" data-cat="illustrations"> 
       
@@ -1479,35 +1437,6 @@
           </div>          
         </div>
 
-
-
-
-        <!-- ══════════════════════════════════════════════════════════
-             ADD MORE ILLUSTRATION MEDIA — copy the <div> block below,
-             paste it ABOVE this comment, then fill in your content.
-             Next label: [ CATEGORY Illustrations MEDIA 2 ]
-        ══════════════════════════════════════════════════════════ -->
-        <template>
-        <div class="gallery-item"
-          data-category="illustrations"
-          data-subcategory=""
-          data-title="Your piece title"
-          data-tooltip-desc="Short sentence shown in the hover tooltip."
-          data-lightbox-desc="Longer paragraph shown in the lightbox when clicked. Describe the piece, your process, tools used, and any relevant context.">           
-          <!-- [ CATEGORY Illustrations MEDIA 2 ]-->
-          <div class="media" style="aspect-ratio: 4/3; background: #FFA8C5;">          
-             IMAGE: replace the background above with background-image:url('your-file.jpg')
-                 and background-size:cover, or swap this whole div for an <img> tag
-            <span class="media-label">Your piece title</span>
-          </div>
-          <div class="caption">
-            <p class="caption-title">Your piece title</p>         
-             [ MEDIA DESCRIPTION ]
-            <p class="caption-desc">Short sentence shown in the hover tooltip.</p>
-          </div>
-        </div>
-        </template>
-
       </div>
     </section>          
 
@@ -1578,6 +1507,8 @@
       </div>
     </section> -->
 
+
+
     <!-- ============ ABOUT ME SECTION ============ -->
     <div class="section-divider">
       <div class="divider-badge"><span class="divider-title">About me</span></div>
@@ -1588,10 +1519,8 @@
       <div class="page-content about-layout">
         <div class="about-left">
           <div class="page-media">
-            <!-- IMAGE: portrait photo or illustrated self-portrait -->
             <div class="media">
               <img src="media/Janne.png" alt="Janne's portrait" />
-              <!-- <span class="media-label">About photo</span>  -->
             </div>
           </div>
 
@@ -1618,10 +1547,10 @@
             <br><br>     ✔️  5+ released games, and 10+ game jams and prototypes on my itch.io
             <br><br>     ✔️  Several award-winning games as game writer & animator
           </p>
-          <!-- TEXT: skills/tools grid — edit labels and descriptions -->
         </div>
       </div>
     </section>
+
 
     <!-- ============ LET'S COLLABORATE SECTION ============ -->
     <div class="section-divider">
@@ -1643,19 +1572,10 @@
           </div>
           <div class="contact-detail">
             <span class="contact-dot"></span>
-            <!-- TEXT: availability note -->
             <span>Or check my socials on the sidebar to reach me anywhere!</span>
           </div>
         </div>
-
-       <!-- <div class="page-media">
-           IMAGE: illustration, sticker, or photo for the contact page 
-          <div class="media" style="aspect-ratio: 1/1; background: #FFC785;">
-            <span class="media-label">Contact illustration</span>
-          </div>
-        </div>   -->
-
-        
+     
     </section>
 
   </main>
@@ -1670,12 +1590,12 @@
   </div>
 </div>
 
-<!-- LIGHTBOX — full-view popup, see "LIGHTBOX:" note in the editing guide above -->
 <div class="lightbox" id="lightbox">
   <div class="lightbox-backdrop"></div>
   <div class="lightbox-content">
     <div class="lightbox-media" id="lightboxMedia"></div>
     <div class="lightbox-caption">
+      <p class="lightbox-label" id="lightboxLabel"></p>
       <p class="lightbox-title" id="lightboxTitle"></p>
       <p class="lightbox-desc" id="lightboxDesc"></p>
     </div>
@@ -1686,12 +1606,7 @@
 </div>
 
 <script>
-  /* ---- Daisy field generation ----
-     Builds the decorative flower background fresh on every page load,
-     sized against the page's actual scrollable height (not just one
-     viewport) so the flowers always cover the full length of the content,
-     however tall it ends up being. Re-runs on resize in case the layout
-     reflows (e.g. switching to the mobile sidebar). */
+
   function generateDaisyField() {
     const field = document.getElementById('daisyField');
     if (!field) return;
@@ -1751,8 +1666,6 @@
   const menuToggle      = document.getElementById('menuToggle');
   const sidebarBackdrop = document.getElementById('sidebarBackdrop');
 
-  /* ---- Click to scroll ----
-     Clicking a sidebar item smooth-scrolls to its section. */
   navButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const targetSection = document.getElementById(btn.dataset.target);
@@ -1765,13 +1678,11 @@
     });
   });
 
-  /* ---- Scroll-spy ----
-     Highlights the sidebar entry matching whichever section is currently
-     most in view, so the sidebar always reflects scroll position. */
+
   const sections = document.querySelectorAll('.content-section');
 
   const spyObserver = new IntersectionObserver((entries) => {
-    // Pick the section with the largest visible ratio among current intersections
+
     let best = null;
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -1792,7 +1703,6 @@
 
   sections.forEach(sec => spyObserver.observe(sec));
 
-  /* ---- Cursor-following tooltip ---- */
   const tooltip      = document.getElementById('cursorTooltip');
   const tooltipMedia = document.getElementById('tooltipMedia');
   const tooltipTitle = document.getElementById('tooltipTitle');
@@ -1830,7 +1740,6 @@
     });
   });
 
-  /* ---- Mobile menu ---- */
   menuToggle.addEventListener('click', () => {
     sidebar.classList.toggle('open');
     sidebarBackdrop.classList.toggle('open');
@@ -1841,17 +1750,16 @@
     sidebarBackdrop.classList.remove('open');
   });
 
-  /* ---- Lightbox ---- */
   const lightbox      = document.getElementById('lightbox');
   const lightboxMedia = document.getElementById('lightboxMedia');
+  const lightboxLabel = document.getElementById('lightboxLabel');
   const lightboxTitle = document.getElementById('lightboxTitle');
   const lightboxDesc  = document.getElementById('lightboxDesc');
   const lightboxClose = document.getElementById('lightboxClose');
   const lightboxPrev  = document.getElementById('lightboxPrev');
   const lightboxNext  = document.getElementById('lightboxNext');
 
-  // All linkable items across the whole page, in document order — the lightbox
-  // now cycles through everything as you scroll-navigate it, not just one section
+
   let lightboxItems = [];
   let lightboxIndex = -1;
 
@@ -1869,6 +1777,10 @@
     lightboxMedia.style.backgroundImage = computed.backgroundImage;
     lightboxMedia.style.backgroundColor = computed.backgroundColor;
     lightboxMedia.innerHTML = media.innerHTML;
+
+    // Extract the media-label text and put it in the caption above the title
+    const labelEl = media.querySelector('.media-label');
+    lightboxLabel.textContent = labelEl ? labelEl.textContent : '';
 
     lightboxTitle.textContent = item.dataset.title || '';
     lightboxDesc.innerHTML  = item.dataset.lightboxDesc || item.dataset.tooltipDesc || item.dataset.desc || '';
@@ -1930,8 +1842,6 @@
     else if (e.key === 'ArrowLeft') showPrev();
   });
 
-  // Scroll wheel moves to the next/previous piece, with a short cooldown so
-  // one scroll gesture doesn't fly through several images at once
   let wheelLocked = false;
   lightbox.addEventListener('wheel', (e) => {
     if (!lightbox.classList.contains('open')) return;
